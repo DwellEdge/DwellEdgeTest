@@ -1,0 +1,7 @@
+git rm -r --cached node_modules
+git rm -r --cached client/node_modules
+git rm -r --cached server/node_modules/.env.example
+
+git add .
+git commit -m "Fixed gitignore (removed node_modules)"
+git push origin main
