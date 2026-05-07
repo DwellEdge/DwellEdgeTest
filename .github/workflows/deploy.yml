@@ -31,8 +31,8 @@ jobs:
       - name: Clean install dependencies
         working-directory: ./client
         run: |
-               rm -rf node_modules
-               npm ci --include=optional
+          rm -rf node_modules
+          npm ci --include=optional
 
       - name: Build project
         working-directory: ./client
