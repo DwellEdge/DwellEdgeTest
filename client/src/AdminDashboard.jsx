@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./innerpages.css";
 
-const API = "http://localhost:5001";
+const API = import.meta.env.VITE_API_URL;
 
 function AdminDashboard() {
   const navigate = useNavigate();

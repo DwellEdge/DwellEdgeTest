@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "./api";
 import React, { useState } from "react";
 import Navbar from "./Navbar";
 import "./style.css";
@@ -23,7 +24,7 @@ function ApplyJob() {
   try {
     console.log("🚀 Sending:", user);
 
-    const res = await fetch("http://localhost:5001/apply", {
+    const res = await fetch(`${API_BASE_URL}/apply`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

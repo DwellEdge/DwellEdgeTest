@@ -18,8 +18,6 @@ function Careers() {
     .then((res) => {
       const data = res.data;
 
-      console.log("API DATA:", data);
-
       const activeJobs = Array.isArray(data)
         ? data.filter((j) => j.isActive !== false)
         : [];
