@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./innerpages.css";
 import Navbar from "./Navbar";
-
+import { api } from "./api";
 
 function Login() {
   const [email, setEmail] = useState("");

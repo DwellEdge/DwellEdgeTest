@@ -10,6 +10,7 @@ import AdminDashboard from "./AdminDashboard";
 import Navbar from "./Navbar";
 import Services from "./Services";
 import ServiceData from "./ServiceData";
+import { api } from "./api";
 
 function App() {
   return (

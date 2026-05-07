@@ -1,4 +1,4 @@
-node_modules
-dist
-.cache
-.env
+node_modules/
+client/node_modules/
+dist/
+client/dist/
