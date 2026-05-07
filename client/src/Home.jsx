@@ -4,14 +4,12 @@ import "./style.css";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
+// 🎥 Videos
 import video1 from "./vedioes/ai-animation-video.mp4";
-import video2 from "./vedioes/successful-marketing.mp4";
 import video3 from "./vedioes/backside-motion-poster.mp4";
-
 import slide1 from "./vedioes/birds-vedio.mp4";
-import slide2 from "./vedioes/flowers-vedio.mp4";
-import slide3 from "./vedioes/green-aeroplane-vedio.mp4";
 
+// 🖼️ Images
 import image1 from "./images/buildings.png";
 import image2 from "./images/design-building.png";
 import image3 from "./images/nature-buildings.png";
@@ -22,27 +20,10 @@ import img4 from "./images/hospital-application.webp";
 import img5 from "./images/hostal-application.jpg";
 import img6 from "./images/webdegin-image.avif";
 
-console.log("video1:", video1);
-console.log("video2:", video2);
-console.log("video3:", video3);
-console.log("slide1:", slide1);
-console.log("slide2:", slide2);
-console.log("slide3:", slide3);
-
 function Home() {
   const slides = [
     {
       video: slide1,
-      title: "Empowering Talent Transformations",
-      text: "Embrace the talent revolution and build future-ready skills with DWELLEDGE technologies.",
-    },
-    {
-      video: slide2,
-      title: "Innovative Digital Solutions",
-      text: "We design scalable web, AI, and cloud solutions that accelerate business growth and efficiency.",
-    },
-    {
-      video: slide3,
       title: "Technology That Drives Success",
       text: "From startups to enterprises, DWELLEDGE delivers smart, reliable, and high-performance software solutions.",
     },
@@ -51,54 +32,41 @@ function Home() {
   const [current, setCurrent] = useState(0);
 
   const heroVideoRef = useRef(null);
-  const bgVideoRef   = useRef(null);
-  const promo1Ref    = useRef(null);
-  const promo2Ref    = useRef(null);
-  const trackRef     = useRef(null);
+  const bgVideoRef = useRef(null);
+  const promo1Ref = useRef(null);
+  const promo2Ref = useRef(null);
+  const trackRef = useRef(null);
 
-  //  Play hero video every time slide changes
+  // Play hero video when slide changes
   useEffect(() => {
     const v = heroVideoRef.current;
-    if (!v) return;
-    v.play().catch(() => {});
+    if (v) v.play().catch(() => { });
   }, [current]);
 
-  // Force play bg + promo videos on mount
+  // Force play background + promo videos on mount
   useEffect(() => {
     [bgVideoRef, promo1Ref, promo2Ref].forEach((ref) => {
       const v = ref.current;
-      if (!v) return;
-      v.play().catch(() => {});
+      if (v) v.play().catch(() => { });
     });
   }, []);
 
-  // Play videos when they scroll into view
+  // Auto-play videos when scrolled into view
   useEffect(() => {
     const refs = [bgVideoRef, promo1Ref, promo2Ref];
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.play().catch(() => {});
-          }
+          if (entry.isIntersecting) entry.target.play().catch(() => { });
         });
       },
       { threshold: 0.1 }
     );
-
-    refs.forEach((ref) => {
-      if (ref.current) observer.observe(ref.current);
-    });
-
-    return () => {
-      refs.forEach((ref) => {
-        if (ref.current) observer.unobserve(ref.current);
-      });
-    };
+    refs.forEach((ref) => ref.current && observer.observe(ref.current));
+    return () => refs.forEach((ref) => ref.current && observer.unobserve(ref.current));
   }, []);
 
-  // Fade-up scroll observer + auto slide interval
+  // Fade-up + auto slide
   useEffect(() => {
     const elements = document.querySelectorAll(".fade-up");
     const fadeObserver = new IntersectionObserver(
@@ -110,23 +78,20 @@ function Home() {
       { threshold: 0.15 }
     );
     elements.forEach((el) => fadeObserver.observe(el));
-
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
-    }, 5001);
-
+    }, 5000);
     return () => {
       elements.forEach((el) => fadeObserver.unobserve(el));
       clearInterval(interval);
     };
   }, [slides.length]);
 
-  const scrollLeft  = () => trackRef.current?.scrollBy({ left: -300, behavior: "smooth" });
-  const scrollRight = () => trackRef.current?.scrollBy({ left:  300, behavior: "smooth" });
+  const scrollLeft = () => trackRef.current?.scrollBy({ left: -300, behavior: "smooth" });
+  const scrollRight = () => trackRef.current?.scrollBy({ left: 300, behavior: "smooth" });
 
   return (
     <div className="homepage">
-
       <Navbar />
 
       {/* ===== HERO ===== */}
@@ -146,7 +111,7 @@ function Home() {
             <h1>{slides[current].title}</h1>
             <p>{slides[current].text}</p>
             <div className="hero-buttons">
-              <Link to="/contact"  className="cta-btn">Contact Us</Link>
+              <Link to="/contact" className="cta-btn">Contact Us</Link>
               <Link to="/Services" className="cta-btn primary">Get Started</Link>
             </div>
           </div>
@@ -189,7 +154,7 @@ function Home() {
         <div className="promo-right">
           <video
             ref={promo1Ref}
-            src={video2}
+            src={video3}  
             muted
             playsInline
             loop
@@ -246,7 +211,6 @@ function Home() {
           </div>
         </div>
       </section>
-
       {/* ===== CAROUSEL ===== */}
       <section className="giftcard-section fade-up">
         <h2 className="giftcard-heading">Popular development</h2>
@@ -255,14 +219,14 @@ function Home() {
           you achieve your goals faster and more efficiently.
         </p>
         <div className="giftcard-carousel">
-          <button className="carousel-arrow left"  onClick={scrollLeft}>‹</button>
+          <button className="carousel-arrow left" onClick={scrollLeft}>‹</button>
           <div className="giftcard-track" ref={trackRef}>
-            <div className="giftcard-box"><img src={img1} alt="App-support"  /><h3>App Support</h3></div>
-            <div className="giftcard-box"><img src={img2} alt="Ecommerce"    /><h3>E-Commerce App</h3></div>
-            <div className="giftcard-box"><img src={img3} alt="Healthcare"   /><h3>Healthcare Domain</h3></div>
-            <div className="giftcard-box"><img src={img4} alt="Hospital"     /><h3>Hospital Application</h3></div>
-            <div className="giftcard-box"><img src={img5} alt="Hostel"       /><h3>Hostel Application</h3></div>
-            <div className="giftcard-box"><img src={img6} alt="Webdesign"    /><h3>Web Design</h3></div>
+            <div className="giftcard-box"><img src={img1} alt="App-support" /><h3>App Support</h3></div>
+            <div className="giftcard-box"><img src={img2} alt="Ecommerce" /><h3>E-Commerce App</h3></div>
+            <div className="giftcard-box"><img src={img3} alt="Healthcare" /><h3>Healthcare Domain</h3></div>
+            <div className="giftcard-box"><img src={img4} alt="Hospital" /><h3>Hospital Application</h3></div>
+            <div className="giftcard-box"><img src={img5} alt="Hostel" /><h3>Hostel Application</h3></div>
+            <div className="giftcard-box"><img src={img6} alt="Webdesign" /><h3>Web Design</h3></div>
           </div>
           <button className="carousel-arrow right" onClick={scrollRight}>›</button>
         </div>
