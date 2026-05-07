@@ -1,3 +1,4 @@
+import React from "react";
 import { StrictMode } from "react";
 import App from "./App.jsx";
 import "./style.css";
