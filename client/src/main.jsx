@@ -1,15 +1,11 @@
-import React from "react";
-import { StrictMode } from "react";
 import App from "./App.jsx";
-import "./style.css";
-import ReactDOM from "react-dom/client";
-import { HashRouter } from "react-router-dom";
+import "./style.css"; 
+import { Routes, Route } from "react-router-dom";
 
-
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <HashRouter>
+export default function App() {
+  return (
+    <Routes>
       <App />
-    </HashRouter>
-  </React.StrictMode>
-);
+    </Routes>
+  );
+}
