@@ -1,3 +1,4 @@
+import { api } from "./api";
 import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import bgImage from "./images/career-image.jpg";
@@ -13,23 +14,23 @@ function Careers() {
 
   /* FETCH JOBS */
   useEffect(() => {
-    api.get("/careers")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("API DATA:", data);
+  api.get("/careers")
+    .then((res) => {
+      const data = res.data;
 
-        
-        const activeJobs = Array.isArray(data)
-          ? data.filter((j) => j.isActive !== false)
-          : [];
+      console.log("API DATA:", data);
 
-        setJobs(activeJobs);
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        setJobs([]);
-      });
-  }, []);
+      const activeJobs = Array.isArray(data)
+        ? data.filter((j) => j.isActive !== false)
+        : [];
+
+      setJobs(activeJobs);
+    })
+    .catch((err) => {
+      console.error("Fetch error:", err);
+      setJobs([]);
+    });
+}, []);
 
   /* SEARCH FILTER */
   const filteredJobs = jobs.filter((job) =>
