@@ -9,10 +9,16 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-  origin: ["https://dwelledge.github.io"],
-  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
-  credentials: true
+  origin: [
+    "http://localhost:5173",
+    "https://dwelledge.github.io",
+    "https://dwelledge.github.io/DwellEdgeTest"
+  ],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
+app.options("*", cors());
 app.use(express.json());
 
 /* ================= CONFIG ================= */
