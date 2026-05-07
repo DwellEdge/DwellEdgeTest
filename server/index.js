@@ -8,7 +8,11 @@ import jwt from "jsonwebtoken";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ["https://dwelledge.github.io"],
+  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+  credentials: true
+}));
 app.use(express.json());
 
 /* ================= CONFIG ================= */
