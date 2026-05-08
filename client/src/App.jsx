@@ -1,4 +1,4 @@
-import {  Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Home from "./Home";
 import Careers from "./Careers";
@@ -10,11 +10,10 @@ import AdminDashboard from "./AdminDashboard";
 import Navbar from "./Navbar";
 import Services from "./Services";
 import ServiceData from "./ServiceData";
-import { api } from "./api";
 
 function App() {
   return (
-    <Router>
+    <>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -27,7 +26,7 @@ function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/services/:serviceId" element={<ServiceData />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 
