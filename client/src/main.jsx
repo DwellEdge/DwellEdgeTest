@@ -1,11 +1,13 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { HashRouter } from "react-router-dom";
 import App from "./App.jsx";
-import "./style.css"; 
-import { Routes, Route } from "react-router-dom";
+import "./style.css";
 
-export default function App() {
-  return (
-    <Routes>
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <HashRouter>
       <App />
-    </Routes>
-  );
-}
+    </HashRouter>
+  </React.StrictMode>
+);
