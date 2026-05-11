@@ -131,7 +131,29 @@ body {
   }
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 /* ===== HERO ===== */
+
+.hero-section {
+  width: 100%;
+  overflow: hidden;
+}
+
+.hero-content {
+  width: 100%;
+  padding: 20px;
+}
+
 .hero-banner {
   position: relative;
   height: 100vh;
@@ -200,8 +222,21 @@ body {
 
 .hero-buttons {
   display: flex;
-  gap: 16px;
-  margin-top: 10px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+@media screen and (max-width: 768px) {
+
+  .hero-title {
+    font-size: 48px !important;
+    line-height: 1.1;
+  }
+
+  .hero-subtitle {
+    font-size: 18px !important;
+  }
+
 }
 
 /* ===== INDUSTRY / VIDEO BG SECTION ===== */
