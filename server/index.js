@@ -8,12 +8,23 @@ import jwt from "jsonwebtoken";
 dotenv.config();
 
 const app = express();
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "https://dwelledgetest.onrender.com",
+  "https://dwelledge.github.io",
+  "https://dwelledge.github.io/DwellEdgeTest"
+];
+
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://dwelledge.github.io",
-    "https://dwelledge.github.io/DwellEdgeTest"
-  ],
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // allow non-browser requests
+    if (allowedOrigins.includes(origin) || origin.startsWith("http://localhost:")) {
+      return callback(null, true);
+    }
+    callback(new Error(`CORS policy does not allow access from origin ${origin}`));
+  },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
@@ -24,6 +35,9 @@ app.use(express.json());
 /* ================= CONFIG ================= */
 const PORT = process.env.PORT || 5000; // 🔥 changed to 5000 to avoid conflict
 const JWT_SECRET = process.env.JWT_SECRET || "secret123";
+
+const normalizeEmail = (value) => String(value || "").trim().toLowerCase();
+const escapeRegex = (value) => String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /* ================= CHECK ENV ================= */
 if (!process.env.ATLAS_URI) {
@@ -97,12 +111,14 @@ app.get("/", (req, res) => {
 app.post("/api/auth/register", async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = normalizeEmail(email);
+    const emailRegex = new RegExp(`^${escapeRegex(normalizedEmail)}$`, "i");
 
-    const exists = await User.findOne({ email });
+    const exists = await User.findOne({ email: emailRegex });
     if (exists) return res.status(400).json({ message: "User already exists" });
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ email, password: hashed });
+    const user = await User.create({ email: normalizedEmail, password: hashed });
 
     res.json({ message: "User created", user });
   } catch (err) {
@@ -114,8 +130,10 @@ app.post("/api/auth/register", async (req, res) => {
 app.post("/api/auth/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = normalizeEmail(email);
+    const emailRegex = new RegExp(`^${escapeRegex(normalizedEmail)}$`, "i");
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: emailRegex });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
     const match = await bcrypt.compare(password, user.password);

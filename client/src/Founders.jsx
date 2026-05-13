@@ -4,8 +4,9 @@ import "./innerpages.css";
 import dwelledgeLogo from "./images/dwelledgeimage.png";
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
+import { API_BASE_URL } from "./api";
 
-const API = "http://localhost:5000";
+const API = API_BASE_URL;
 
 function Founders() {
     const [founders, setFounders] = useState([]);

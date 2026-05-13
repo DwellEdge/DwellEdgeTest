@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "./Navbar";
 import "./style.css";
 import { Link, useLocation } from "react-router-dom";
+import { API_BASE_URL } from "./api";
 
 function ApplyJob() {
     const location = useLocation();   
@@ -33,7 +34,7 @@ function ApplyJob() {
       formData.append('resume', user.resume);
     }
 
-    const res = await fetch("http://localhost:5000/apply", {
+    const res = await fetch(`${API_BASE_URL}/apply`, {
       method: "POST",
       body: formData
     });

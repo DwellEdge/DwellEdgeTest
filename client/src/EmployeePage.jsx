@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./innerpages.css";
 import dwelledgeLogo from "./images/dwelledgeimage.png";
+import { API_BASE_URL } from "./api";
 
-const API = "http://localhost:5000";
+const API = API_BASE_URL;
 
 function EmployeePage() {
     const [employees, setEmployees] = useState([]);

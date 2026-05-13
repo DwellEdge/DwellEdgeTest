@@ -4,6 +4,7 @@ import bgImage from "./images/career-image.jpg";
 import "./style.css";
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "./api";
 
 function Careers() {
   const [jobs, setJobs] = useState([]);
@@ -13,7 +14,7 @@ function Careers() {
 
   /* FETCH JOBS */
   useEffect(() => {
-    fetch("http://localhost:5000/careers")
+    fetch(`${API_BASE_URL}/careers`)
       .then((res) => res.json())
       .then((data) => {
         console.log("API DATA:", data);
