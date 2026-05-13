@@ -22,7 +22,7 @@ app.options("*", cors());
 app.use(express.json());
 
 /* ================= CONFIG ================= */
-const PORT = process.env.PORT || 5001; // 🔥 changed to 5001 to avoid conflict
+const PORT = process.env.PORT || 5000; // 🔥 changed to 5000 to avoid conflict
 const JWT_SECRET = process.env.JWT_SECRET || "secret123";
 
 /* ================= CHECK ENV ================= */

@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { api } from "./api";
 import "./innerpages.css";
-import Navbar from "./Navbar";
 
-export default function Login() {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,28 +13,34 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
-      const res = await api.post("/api/auth/login", { email, password });
-      const data = res.data;
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
 
+      if (!res.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      // ✅ SAVE LOGIN DATA
       localStorage.setItem("token", data.token);
       localStorage.setItem("adminEmail", email);
 
-      navigate("/admin");
+      // ✅ FORCE REFRESH AUTH STATE
+      window.location.href = "/admin";
     } catch (err) {
-      const msg =
-        err?.response?.data?.message || err?.message || "Login failed";
-      setError(msg);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
+
   return (
     <div className="login-page">
-      <Navbar />
-
       <div className="login-bg-circle login-bg-circle-1" />
       <div className="login-bg-circle login-bg-circle-2" />
       <div className="login-bg-letter">D</div>
@@ -57,16 +61,11 @@ export default function Login() {
               Welcome <em>back</em> to your workspace
             </h2>
             <p className="login-left-sub">
-              Manage job opportunities, track applications, and grow the team
-              from one powerful dashboard.
+              Manage job opportunities, track applications, and grow the team from one powerful dashboard.
             </p>
 
             <div className="login-features">
-              {[
-                "Manage job listings",
-                "Add & remove opportunities",
-                "Track open positions",
-              ].map((f, i) => (
+              {["Manage job listings", "Add & remove opportunities", "Track open positions"].map((f, i) => (
                 <div className="login-feature-item" key={i}>
                   <span className="login-feature-dot" />
                   {f}
@@ -85,9 +84,7 @@ export default function Login() {
             <div className="login-form-header">
               <p className="login-eyebrow">EMPLOYEE ACCESS</p>
               <h2 className="login-form-title">Sign In</h2>
-              <p className="login-form-sub">
-                Enter your credentials to access the admin dashboard
-              </p>
+              <p className="login-form-sub">Enter your credentials to access the admin dashboard</p>
             </div>
 
             <form className="login-form" onSubmit={handleLogin}>
@@ -117,20 +114,21 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    autoComplete="current-password"
                   />
                 </div>
               </div>
 
-              {error && <div className="login-error">⚠ {error}</div>}
+              {error && (
+                <div className="login-error">
+                  ⚠ {error}
+                </div>
+              )}
 
               <button type="submit" className="login-btn" disabled={loading}>
                 {loading ? (
                   <span className="login-spinner" />
                 ) : (
-                  <>
-                    Sign In <span className="login-btn-arrow">→</span>
-                  </>
+                  <>Sign In <span className="login-btn-arrow">→</span></>
                 )}
               </button>
             </form>
@@ -140,3 +138,5 @@ export default function Login() {
     </div>
   );
 }
+
+export default Login;

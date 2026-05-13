@@ -1,4 +1,3 @@
-import { API_BASE_URL } from "./api";
 import React, { useState } from "react";
 import Navbar from "./Navbar";
 import "./style.css";
@@ -24,12 +23,19 @@ function ApplyJob() {
   try {
     console.log("🚀 Sending:", user);
 
-    const res = await fetch(`${API_BASE_URL}/apply`, {
+    const formData = new FormData();
+    Object.keys(user).forEach(key => {
+      if (key !== 'resume') {
+        formData.append(key, user[key]);
+      }
+    });
+    if (user.resume && typeof user.resume !== 'string') {
+      formData.append('resume', user.resume);
+    }
+
+    const res = await fetch("http://localhost:5000/apply", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(user)
+      body: formData
     });
 
     const text = await res.text();   
@@ -84,8 +90,9 @@ function ApplyJob() {
                                 type="file"
                                 className="file-input"
                                 onChange={(e) => {
-                                    setFileName(e.target.files[0]?.name);
-                                    setUser({ ...user, resume: e.target.files[0]?.name });
+                                    const file = e.target.files[0];
+                                    setFileName(file?.name);
+                                    setUser({ ...user, resume: file });
                                 }}
                             />
 
