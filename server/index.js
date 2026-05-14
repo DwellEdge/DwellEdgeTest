@@ -20,7 +20,7 @@ const allowedOrigins = [
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true); // allow non-browser requests
-    if (allowedOrigins.includes(origin) || origin.startsWith("http://localhost:")) {
+    if (allowedOrigins.includes(origin) || origin.startsWith("https://dwelledge.github.io")) {
       return callback(null, true);
     }
     callback(new Error(`CORS policy does not allow access from origin ${origin}`));
