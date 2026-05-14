@@ -36,8 +36,6 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000; // 🔥 changed to 5000 to avoid conflict
 const JWT_SECRET = process.env.JWT_SECRET || "secret123";
 
-const normalizeEmail = (value) => String(value || "").trim().toLowerCase();
-const escapeRegex = (value) => String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /* ================= CHECK ENV ================= */
 if (!process.env.ATLAS_URI) {
