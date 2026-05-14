@@ -9,7 +9,16 @@ function ApplyJob() {
     const job = location.state;
 
     const [user, setUser] = useState({
-        jobId: job?._id || ""
+        jobId: job?._id || "",
+        firstName: "",
+        lastName: "",
+        emailId: "",
+        mobileNumber: "",
+        primarySkills: "",
+        secondarySkills: "",
+        totalExperience: "",
+        relevantExperience: "",
+        resume: null,
     });
 
     console.log("JOB DATA:", job);
@@ -20,40 +29,52 @@ function ApplyJob() {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async () => {
-  try {
-    console.log("🚀 Sending:", user);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    const formData = new FormData();
-    Object.keys(user).forEach(key => {
-      if (key !== 'resume') {
-        formData.append(key, user[key]);
-      }
-    });
-    if (user.resume && typeof user.resume !== 'string') {
-      formData.append('resume', user.resume);
-    }
+        if (!user.jobId) {
+            alert("Unable to submit application: job information is missing.");
+            return;
+        }
 
-    const res = await fetch(`${API_BASE_URL}/apply`, {
-      method: "POST",
-      body: formData
-    });
+        try {
+            console.log("🚀 Sending:", user);
 
-    const text = await res.text();   
-    console.log("RAW RESPONSE:", text);
+            const formData = new FormData();
+            formData.append("jobId", user.jobId);
+            formData.append("firstName", user.firstName.trim());
+            formData.append("lastName", user.lastName.trim());
+            formData.append("emailId", user.emailId.trim());
+            formData.append("mobileNumber", user.mobileNumber.trim());
+            formData.append("primarySkills", user.primarySkills.trim());
+            formData.append("secondarySkills", user.secondarySkills.trim());
+            formData.append("totalExperience", user.totalExperience.trim());
+            formData.append("relevantExperience", user.relevantExperience.trim());
 
-    const data = text ? JSON.parse(text) : {};
+            if (user.resume) {
+                formData.append("resume", user.resume);
+            }
 
-    if (res.ok) {
-      alert("Application Submitted 🚀");
-    } else {
-      alert(data.error || "Error occurred");
-    }
+            const res = await fetch(`${API_BASE_URL}/apply`, {
+                method: "POST",
+                body: formData,
+            });
 
-  } catch (err) {
-    console.error("❌ Fetch Error:", err);
-  }
-};
+            const text = await res.text();
+            console.log("RAW RESPONSE:", text);
+
+            const data = text ? JSON.parse(text) : {};
+
+            if (res.ok) {
+                alert("Application Submitted 🚀");
+            } else {
+                alert(data.message || data.error || "Error occurred");
+            }
+        } catch (err) {
+            console.error("❌ Fetch Error:", err);
+            alert("Failed to submit application. Please try again.");
+        }
+    };
     return (
         <div className="apply-page">
 
@@ -63,15 +84,41 @@ function ApplyJob() {
 
                 <h1 className="apply-title">Apply for {job?.jobTitle}</h1>
 
-                {/* PERSONAL INFO */}
-                <section className="apply-card">
-                    <h2>Personal Information</h2>
+                <form className="apply-form" onSubmit={handleSubmit}>
 
-                    <div className="apply-grid">
-                        <input name="firstName" placeholder="First Name" onChange={handleChange} />
-                        <input name="lastName" placeholder="Last Name" onChange={handleChange} />
-                        <input name="emailId" placeholder="Email" onChange={handleChange} />
-                        <input name="mobileNumber" placeholder="Mobile Number" onChange={handleChange} />
+                    {/* PERSONAL INFO */}
+                    <section className="apply-card">
+                        <h2>Personal Information</h2>
+
+                        <div className="apply-grid">
+                        <input
+                            name="firstName"
+                            placeholder="First Name"
+                            value={user.firstName}
+                            onChange={handleChange}
+                            required
+                        />
+                        <input
+                            name="lastName"
+                            placeholder="Last Name"
+                            value={user.lastName}
+                            onChange={handleChange}
+                            required
+                        />
+                        <input
+                            name="emailId"
+                            placeholder="Email"
+                            value={user.emailId}
+                            onChange={handleChange}
+                            required
+                        />
+                        <input
+                            name="mobileNumber"
+                            placeholder="Mobile Number"
+                            value={user.mobileNumber}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
                 </section>
 
@@ -80,10 +127,30 @@ function ApplyJob() {
                     <h2>Work Experience</h2>
 
                     <div className="apply-grid">
-                        <input name="primarySkills" placeholder="Primary Skills" onChange={handleChange} />
-                        <input name="secondarySkills" placeholder="Secondary Skills" onChange={handleChange} />
-                        <input name="totalExperience" placeholder="Total Experience (years)" onChange={handleChange} />
-                        <input name="relevantExperience" placeholder="Relevant Experience (years)" onChange={handleChange} />
+                        <input
+                            name="primarySkills"
+                            placeholder="Primary Skills"
+                            value={user.primarySkills}
+                            onChange={handleChange}
+                        />
+                        <input
+                            name="secondarySkills"
+                            placeholder="Secondary Skills"
+                            value={user.secondarySkills}
+                            onChange={handleChange}
+                        />
+                        <input
+                            name="totalExperience"
+                            placeholder="Total Experience (years)"
+                            value={user.totalExperience}
+                            onChange={handleChange}
+                        />
+                        <input
+                            name="relevantExperience"
+                            placeholder="Relevant Experience (years)"
+                            value={user.relevantExperience}
+                            onChange={handleChange}
+                        />
 
                         <div className="full">
                             <label>Upload Resume</label>
@@ -111,11 +178,13 @@ function ApplyJob() {
                         ← Back to Careers
                     </Link>
 
-                    <button className="primary-btn" onClick={handleSubmit}>
+                    <button type="submit" className="primary-btn">
                         Submit Application 🚀
                     </button>
 
                 </div>
+
+                </form>
 
             </main>
         </div>

@@ -244,24 +244,34 @@ app.post("/apply", upload.single("resume"), async (req, res) => {
     console.log("BODY:", req.body);
     console.log("FILE:", req.file);
 
+    const {
+      jobId,
+      firstName,
+      lastName,
+      mobileNumber,
+      emailId,
+      primarySkills,
+      secondarySkills,
+      totalExperience,
+      relevantExperience,
+    } = req.body;
+
+    if (!jobId || !firstName || !lastName || !emailId) {
+      return res.status(400).json({
+        message: "Missing required application fields.",
+      });
+    }
+
     const application = new Application({
-      jobId: new mongoose.Types.ObjectId(req.body.jobId),
-
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-
-      mobileNumber: req.body.mobileNumber,
-
-      emailId: req.body.emailId,
-
-      primarySkills: req.body.primarySkills,
-
-      secondarySkills: req.body.secondarySkills,
-
-      totalExperience: req.body.totalExperience,
-
-      relevantExperience: req.body.relevantExperience,
-
+      jobId: new mongoose.Types.ObjectId(jobId),
+      firstName: String(firstName || "").trim(),
+      lastName: String(lastName || "").trim(),
+      mobileNumber: String(mobileNumber || "").trim(),
+      emailId: String(emailId || "").trim(),
+      primarySkills: String(primarySkills || "").trim(),
+      secondarySkills: String(secondarySkills || "").trim(),
+      totalExperience: Number(totalExperience) || 0,
+      relevantExperience: Number(relevantExperience) || 0,
       resume: req.file ? req.file.filename : "",
     });
 
