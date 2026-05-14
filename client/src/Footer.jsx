@@ -29,44 +29,44 @@ function Footer() {
               <li><Link to="/about">About Us</Link></li>
               <li><Link to="/contact">Contact Us</Link></li>
               <li><Link to="/careers">Careers</Link></li>
-              <li><Link to="/awards">Awards</Link></li>
-              <li><Link to="/leadership">Leadership</Link></li>
-              <li><Link to="/investors">Investors</Link></li>
-              <li><Link to="/newsroom">Newsroom</Link></li>
-              <li><Link to="/sustainability">Sustainability & Social Impact</Link></li>
+              <li>Awards</li>
+              <li>Leadership</li>
+              <li>Investors</li>
+              <li>Newsroom</li>
+              <li>Sustainability & Social Impact</li>
             </ul>
           </div>
 
           <div className="footer-col">
             <h4>Resources</h4>
             <ul>
-              <li><Link to="/blog">Blog</Link></li>
-              <li><Link to="/stories">Customer Stories</Link></li>
-              <li><Link to="/assessment">Skills Readiness Assessment</Link></li>
-              <li><Link to="/webinars">Webinars</Link></li>
-              <li><Link to="/events">Events</Link></li>
-              <li><Link to="/leadercamps">Leadercamps</Link></li>
-              <li><Link to="/release-calendar">DWELLEDGE Release Calendar</Link></li>
-              <li><Link to="/support">Support</Link></li>
+              <li>Blog</li>
+              <li>Customer Stories</li>
+              <li>Skills Readiness Assessment</li>
+              <li>Webinars</li>
+              <li>Events</li>
+              <li>Leadercamps</li>
+              <li>DWELLEDGE Release Calendar</li>
+              <li>Support</li>
             </ul>
           </div>
 
           <div className="footer-col">
             <h4>DWELLEDGE Platform</h4>
             <ul>
-              <li><Link to="/platform">Meet DWELLEDGE Platform</Link></li>
-              <li><Link to="/app">Download the DWELLEDGE App</Link></li>
-              <li><Link to="/catalog">Explore Premium Content Catalog</Link></li>
+              <li>Meet DWELLEDGE Platform</li>
+              <li>Download the DWELLEDGE App</li>
+              <li>Explore Premium Content Catalog</li>
             </ul>
           </div>
 
           <div className="footer-col">
             <h4>Popular Topics</h4>
             <ul>
-              <li><Link to="/accreditation">Accreditation</Link></li>
-              <li><Link to="/aspire">Aspire Journeys</Link></li>
-              <li><Link to="/compliance">Compliance Courses</Link></li>
-              <li><Link to="/federal">Federal</Link></li>
+              <li>Accreditation</li>
+              <li>Aspire Journeys</li>
+              <li>Compliance Courses</li>
+              <li>Federal</li>
             </ul>
           </div>
 
@@ -77,10 +77,10 @@ function Footer() {
         <img src={dwelledgeLogo} alt="DWELLEDGE Logo" className="footer-logo-img" />
 
         <div className="footer-links">
-          <Link to="/accessibility">Accessibility</Link>
-          <Link to="/terms">Terms of Use</Link>
-          <Link to="/privacy">Privacy Notice</Link>
-          <Link to="/cookies">Cookie Preferences</Link>
+          <p>Accessibility</p>
+          <p>Terms of Use</p>
+         <p> Privacy Notice</p>
+          <p>Cookie Preferences</p>
         </div>
 
         <div className="language-select">

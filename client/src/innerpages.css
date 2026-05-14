@@ -14,11 +14,18 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+
+
+html, body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+
 body {
   font-family: 'Epilogue', sans-serif;
   background: var(--cream);
   color: var(--ink);
-  overflow-x: hidden;
 }
 
 /* ================= NAVBAR ================= */
@@ -121,13 +128,13 @@ body {
 }
 
 /* ================= SERVICES PAGE ================= */
-
 .services-page {
   min-height: 100vh;
   background: var(--cream);
   position: relative;
   padding-left: 16px;
   padding-right: 16px;
+  overflow: visible; 
 }
 
 .services-page::before {
@@ -248,27 +255,20 @@ body {
 /* ================= SERVICE CARD ================= */
 .service-card {
   border-radius: 20px;
-  padding: 36px 24px;   
+  padding: 36px 24px;
   position: relative;
-
-  
-
-  min-height: 260px;    
-
+  min-height: 260px;
   box-shadow: 0 2px 16px rgba(26,22,18,0.06);
   text-align: center;
   background: #ffffff;
   border: 1px solid rgba(26,22,18,0.08);
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-
   transition: transform 0.35s ease,
               box-shadow 0.35s ease,
               border-color 0.35s ease;
-
   overflow: hidden;
 }
 
@@ -295,7 +295,6 @@ body {
 .service-card:hover::before {
   transform: scaleX(1);
 }
-
 
 .service-icon-wrapper,
 .service-emoji,
@@ -354,7 +353,6 @@ body {
   transform: translate(4px, -4px);
 }
 
-
 @media (min-width: 1400px) {
   .services-content {
     max-width: 1100px;
@@ -365,6 +363,9 @@ body {
 .sd-page {
   min-height: 100vh;
   background: var(--cream);
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: visible; 
 }
 
 .sd-hero {
@@ -372,7 +373,6 @@ body {
   padding: 0 64px 20px;
   position: relative;
   overflow: hidden;
-  border-bottom: 1px solid rgba(201,146,74,0.35);
   background: var(--cream);
 }
 
@@ -464,7 +464,6 @@ body {
   position: relative;
 }
 
-/* Gold gradient divider between sections */
 .sd-section::after {
   content: '';
   position: absolute;
@@ -643,11 +642,6 @@ body {
 }
 
 /* ================= SD PAGE GOLDEN CIRCLES ================= */
-.sd-page {
-  position: relative;
-  overflow-x: hidden;
-}
-
 .sd-page::before {
   content: '';
   position: absolute;
@@ -690,24 +684,6 @@ body {
   background: linear-gradient(90deg, var(--gold), rgba(201,146,74,0.3), transparent);
 }
 
-/* ================= SD SECTION GOLDEN DIVIDERS ================= */
-.sd-section::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    var(--gold),
-    rgba(201,146,74,0.5),
-    rgba(201,146,74,0.1),
-    transparent
-  );
-}
-
-
 /* ================= SCROLL REVEAL ================= */
 .reveal {
   opacity: 0;
@@ -742,9 +718,10 @@ body {
 /* ================= ABOUT PAGE ================= */
 .about-page {
   min-height: 100vh;
-  display:flex;
+  display: flex;
   flex-direction: column;
   background: var(--cream);
+  overflow: visible; 
 }
 
 .about-hero {
@@ -825,7 +802,7 @@ body {
 
 .about-content {
   display: flex;
-  flex:1;
+  flex: 1;
   flex-direction: column;
   gap: 0;
   background: rgba(26,22,18,0.06);
@@ -1238,23 +1215,7 @@ body {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ================= ADMIN DASHBOARD ================= */
-/* FIX PAGE LAYOUT */
-.admin-page {
-  display: flex;
-}
 
-/* FIX MAIN CONTENT */
-.admin-main {
-  margin-left: 240px; /* same as sidebar width */
-  padding: 100px 40px 40px; /* top spacing for navbar */
-  width: 100%;
-}
-
-/* FIX TABLE WRAPPER */
-
-.admin-table-wrapper {
-  margin-top: 20px;
-}
 
 .admin-page {
   display: flex;
@@ -1262,6 +1223,7 @@ body {
   background: #f0ebe0;
   font-family: 'Epilogue', sans-serif;
   padding-top: 90px;
+  overflow: visible; 
 }
 
 .admin-sidebar {
@@ -1271,13 +1233,14 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding:   32px 24px;
+  padding: 32px 24px;
   position: fixed;
   top: 90px;
-  left:0;
-  height: 100vh;
-  overflow-y: auto;
-  padding-bottom:120px;
+  left: 0;
+  height: calc(100vh - 90px); 
+  overflow-y: auto;            
+  overflow-x: hidden;
+  padding-bottom: 120px;
 }
 
 .admin-logo {
@@ -1399,11 +1362,13 @@ body {
   color: #f5f0e8;
 }
 
+
 .admin-main {
   flex: 1;
   padding: 40px 48px;
   margin-left: 260px;
-  overflow-y: auto;
+  overflow: visible; 
+  min-height: calc(100vh - 90px);
 }
 
 .admin-header {
@@ -1493,6 +1458,7 @@ body {
   overflow: hidden;
   border: 1px solid rgba(26,22,18,0.06);
   box-shadow: 0 4px 24px rgba(26,22,18,0.06);
+  margin-top: 20px;
 }
 
 .admin-table-header {
@@ -1989,48 +1955,6 @@ body {
   color: #c4533a;
 }
 
-/* ================= RESPONSIVE ================= */
-@media (max-width: 1100px) {
-  .services-row-4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .services-row-3 {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 100%;
-  }
-  .services-content {
-    padding: 100px 32px 80px;
-  }
-}
-
-@media (max-width: 640px) {
-  .services-row-4,
-  .services-row-3 {
-    grid-template-columns: 1fr;
-    max-width: 100%;
-  }
-  .services-content {
-    padding: 100px 20px 60px;
-  }
-  .services-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-  .services-header-right {
-    text-align: left;
-  }
-}
-
-.footer{
-  background: #111;
-  color:#fff;
-  padding:40px 60px;
-  text-align: center;
-  border-top:2px solid #c9924a;
-}
-
-
 /* ================= ADMIN TOP NAVBAR ================= */
 .admin-topnav {
   position: fixed;
@@ -2045,11 +1969,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 60px 0 60px;
+  padding: 0 60px;
   z-index: 1000;
 }
 
-/* Logo */
 .admin-topnav-logo {
   display: flex;
   align-items: center;
@@ -2070,12 +1993,10 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* Nav Links */
 .admin-topnav-links {
   display: flex;
   align-items: center;
   gap: 24px;
-  
 }
 
 .admin-topnav-links a {
@@ -2099,15 +2020,9 @@ body {
   transition: width 0.3s ease;
 }
 
-.admin-topnav-links a:hover {
-  color: #ffffff;
-}
+.admin-topnav-links a:hover { color: #ffffff; }
+.admin-topnav-links a:hover::after { width: 100%; }
 
-.admin-topnav-links a:hover::after {
-  width: 100%;
-}
-
-/* Profile Button */
 .admin-topnav-profile {
   display: flex;
   align-items: center;
@@ -2155,7 +2070,6 @@ body {
   margin-left: 2px;
 }
 
-/* Dropdown */
 .admin-topnav-dropdown {
   position: absolute;
   top: calc(100% + 12px);
@@ -2244,26 +2158,11 @@ body {
   color: #f5f0e8;
 }
 
-.admin-dropdown-logout {
-  color: rgba(196, 83, 58, 0.8);
-}
-
+.admin-dropdown-logout { color: rgba(196, 83, 58, 0.8); }
 .admin-dropdown-logout:hover {
   background: rgba(196, 83, 58, 0.12);
   color: #e06050;
 }
-
-/* Adjust sidebar & main to sit below the 90px topnav */
-.admin-page {
-  padding-top: 90px;
-}
-
-.admin-sidebar {
-  top: 90px !important;
-  height: calc(100vh - 90px) !important;
-}
-
-
 
 /* ================= DASHBOARD PAGE ================= */
 .dashboard-page {
@@ -2271,6 +2170,7 @@ body {
   background: var(--cream);
   position: relative;
   overflow-x: hidden;
+  overflow-y: visible; 
 }
 
 .dashboard-page::before {
@@ -2299,7 +2199,6 @@ body {
   z-index: 0;
 }
 
-/* ================= DASHBOARD HEADER ================= */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
@@ -2339,7 +2238,6 @@ body {
   font-style: italic;
 }
 
-/* ================= DASHBOARD WRAPPER ================= */
 .dashboard-wrapper {
   max-width: 1100px;
   margin: 0 auto;
@@ -2348,14 +2246,12 @@ body {
   z-index: 1;
 }
 
-/* ================= DASHBOARD ROW ================= */
 .dashboard-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
-/* ================= DASHBOARD CARD LINK ================= */
 .dashboard-card-link {
   text-decoration: none;
   color: inherit;
@@ -2363,7 +2259,6 @@ body {
   flex-direction: column;
 }
 
-/* ================= DASHBOARD CARD ================= */
 .dashboard-card {
   border-radius: 20px;
   padding: 40px 28px;
@@ -2419,15 +2314,9 @@ body {
   border-color: rgba(201,146,74,0.4);
 }
 
-.dashboard-card:hover::before {
-  transform: scaleX(1);
-}
+.dashboard-card:hover::before { transform: scaleX(1); }
+.dashboard-card:hover::after { opacity: 1; }
 
-.dashboard-card:hover::after {
-  opacity: 1;
-}
-
-/* ================= DASHBOARD CARD CONTENT ================= */
 .dashboard-card-icon {
   width: 52px;
   height: 52px;
@@ -2482,41 +2371,12 @@ body {
   transform: translate(4px, -4px);
 }
 
-/* ================= RESPONSIVE ================= */
-@media (max-width: 900px) {
-  .dashboard-row {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 580px) {
-  .dashboard-row {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-wrapper {
-    padding: 0 20px 80px;
-  }
-
-  .dashboard-header {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .dashboard-header::after {
-    left: 20px;
-    right: 20px;
-  }
-}
-
-
-
 .admin-main-full {
   margin-left: 260px;
-  width: calc(100%-260px);
+  width: calc(100% - 260px);
   padding: 40px 48px;
+  overflow: visible;
 }
-
 
 .admin-back-btn {
   background: none;
@@ -2541,203 +2401,56 @@ body {
   color: #1a1612;
 }
 
+.footer {
+  background: #111;
+  color: #fff;
+  padding: 40px 60px;
+  text-align: center;
+  border-top: 2px solid #c9924a;
+}
 
-/* =============== Service page ==================== */
- 
- 
-@media (max-width: 480px) {
-  .services-content {
-    padding: 90px 16px 48px;
-  }
- 
-  .services-title {
-    font-size: 32px;
-    letter-spacing: -1px;
-  }
- 
-  .services-eyebrow {
-    font-size: 12px;
-    letter-spacing: 3px;
-  }
- 
-  .service-card {
-    padding: 28px 18px;
-    min-height: unset;
-  }
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1100px) {
+  .services-row-4 { grid-template-columns: repeat(2, 1fr); }
+  .services-row-3 { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
+  .services-content { padding: 100px 32px 80px; }
 }
- 
- 
-/* ================ Service details================= */
- 
-@media (max-width: 768px) {
-  .sd-hero {
-    padding: 0 24px 20px;
-  }
- 
-  .sd-hero-title {
-    font-size: 28px;
-    letter-spacing: -1px;
-  }
- 
-  .sd-hero-tagline {
-    font-size: 16px;
-  }
- 
-  .sd-body {
-    padding: 48px 24px 80px;
-  }
- 
-  .sd-features {
-    grid-template-columns: 1fr;
-  }
- 
-  .sd-cta {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 36px 24px;
-    gap: 24px;
-  }
- 
-  .sd-cta-btn {
-    width: 100%;
-    text-align: center;
-  }
-}
- 
-@media (max-width: 480px) {
-  .sd-section-title {
-    font-size: 20px;
-  }
- 
-  .sd-description {
-    font-size: 15px;
-  }
-}
- 
- 
-/* =============About page================ */
- 
+
 @media (max-width: 900px) {
-  .about-flex {
-    flex-direction: column;
-    padding: 36px 24px;
-    gap: 28px;
-  }
- 
-  .about-flex-reverse {
-    flex-direction: column;
-  }
- 
-  .about-image-wrapper {
-    width: 100%;
-  }
- 
-  .about-image {
-    height: 260px;
-  }
- 
-  .about-hero {
-    padding: 0 24px 20px;
-  }
- 
-  .about-title {
-    font-size: 40px;
-    letter-spacing: -1px;
-  }
- 
-  .about-divider {
-    margin: 0 24px;
-  }
-}
- 
-@media (max-width: 480px) {
-  .about-hero-eyebrow {
-    padding-top: 80px;
-  }
- 
-  .about-title {
-    font-size: 32px;
-  }
- 
-  .about-tagline {
-    font-size: 16px;
-  }
- 
-  .about-section-number {
-    font-size: 48px;
-  }
+  .dashboard-row { grid-template-columns: repeat(2, 1fr); }
+  .about-flex { flex-direction: column; padding: 36px 24px; gap: 28px; }
+  .about-flex-reverse { flex-direction: column; }
+  .about-image-wrapper { width: 100%; }
+  .about-image { height: 260px; }
+  .about-hero { padding: 0 24px 20px; }
+  .about-title { font-size: 40px; letter-spacing: -1px; }
+  .about-divider { margin: 0 24px; }
 }
 
-/* ============== Login page================= */
- 
 @media (max-width: 768px) {
-  .login-container {
-    flex-direction: column;
-    margin: 70px 16px;
-    min-height: unset;
-    border-radius: 16px;
-  }
- 
-  .login-left {
-    padding: 36px 28px;
-  }
- 
-  .login-left-title {
-    font-size: 26px;
-  }
- 
-  
+  .sd-hero { padding: 0 24px 20px; }
+  .sd-hero-title { font-size: 28px; letter-spacing: -1px; }
+  .sd-hero-tagline { font-size: 16px; }
+  .sd-body { padding: 48px 24px 80px; }
+  .sd-features { grid-template-columns: 1fr; }
+  .sd-cta { flex-direction: column; align-items: flex-start; padding: 36px 24px; gap: 24px; }
+  .sd-cta-btn { width: 100%; text-align: center; }
+
+  .login-container { flex-direction: column; margin: 70px 16px; min-height: unset; border-radius: 16px; }
+  .login-left { padding: 36px 28px; }
+  .login-left-title { font-size: 26px; }
   .login-features { display: none; }
- 
-  .login-right {
-    padding: 36px 28px;
-  }
- 
-  .login-form-wrapper {
-    max-width: 100%;
-  }
- 
-  .login-form-title {
-    font-size: 28px;
-  }
-}
- 
-@media (max-width: 480px) {
-  .login-back-link {
-    top: 16px;
-    left: 16px;
-  }
-}
- 
- 
-/* ============== Admin dashboard=============== */
- 
-@media (max-width: 1024px) {
-  .admin-sidebar {
-    width: 220px;
-  }
- 
-  .admin-main,
-  .admin-main-full {
-    margin-left: 220px;
-  }
-}
- 
-@media (max-width: 768px) {
-  
+  .login-right { padding: 36px 28px; }
+  .login-form-wrapper { max-width: 100%; }
+  .login-form-title { font-size: 28px; }
+
   .admin-sidebar {
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     width: 260px;
     z-index: 999;
   }
- 
-
-  .admin-sidebar.sidebar-open {
-    transform: translateX(0);
-  }
- 
-
+  .admin-sidebar.sidebar-open { transform: translateX(0); }
   .sidebar-overlay {
     display: none;
     position: fixed;
@@ -2745,74 +2458,64 @@ body {
     background: rgba(26,22,18,0.5);
     z-index: 998;
   }
- 
-  .sidebar-overlay.visible {
-    display: block;
-  }
- 
+  .sidebar-overlay.visible { display: block; }
+
   .admin-main,
   .admin-main-full {
     margin-left: 0;
     padding: 32px 20px;
     width: 100%;
   }
- 
-  .admin-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
- 
-  .admin-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
- 
-  .admin-add-btn {
-    width: 100%;
-    text-align: center;
-  }
- 
-  /* Make table horizontally scrollable */
-  .admin-table-wrapper {
-    overflow-x: auto;
-  }
- 
-  .admin-table {
-    min-width: 600px;
-  }
+
+  .admin-stats { grid-template-columns: repeat(2, 1fr); }
+  .admin-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .admin-add-btn { width: 100%; text-align: center; }
+  .admin-table-wrapper { overflow-x: auto; }
+  .admin-table { min-width: 600px; }
 }
- 
+
+@media (max-width: 640px) {
+  .services-row-4,
+  .services-row-3 { grid-template-columns: 1fr; max-width: 100%; }
+  .services-content { padding: 100px 20px 60px; }
+  .services-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .services-header-right { text-align: left; }
+}
+
+@media (max-width: 580px) {
+  .dashboard-row { grid-template-columns: 1fr; }
+  .dashboard-wrapper { padding: 0 20px 80px; }
+  .dashboard-header { padding-left: 20px; padding-right: 20px; }
+  .dashboard-header::after { left: 20px; right: 20px; }
+}
+
 @media (max-width: 480px) {
-  .admin-stats {
-    grid-template-columns: 1fr;
-  }
- 
-  .admin-form-row {
-    grid-template-columns: 1fr;
-  }
- 
-  .admin-modal {
-    border-radius: 12px;
-  }
- 
-  .admin-modal-overlay {
-    padding: 16px;
-  }
+  .services-content { padding: 90px 16px 48px; }
+  .services-title { font-size: 32px; letter-spacing: -1px; }
+  .services-eyebrow { font-size: 12px; letter-spacing: 3px; }
+  .service-card { padding: 28px 18px; min-height: unset; }
+
+  .sd-section-title { font-size: 20px; }
+  .sd-description { font-size: 15px; }
+
+  .about-hero-eyebrow { padding-top: 80px; }
+  .about-title { font-size: 32px; }
+  .about-tagline { font-size: 16px; }
+  .about-section-number { font-size: 48px; }
+
+  .login-back-link { top: 16px; left: 16px; }
+
+  .admin-stats { grid-template-columns: 1fr; }
+  .admin-form-row { grid-template-columns: 1fr; }
+  .admin-modal { border-radius: 12px; }
+  .admin-modal-overlay { padding: 16px; }
+
+  .dashboard-title { font-size: 32px; letter-spacing: -1px; }
+  .dashboard-card { padding: 28px 20px; min-height: 180px; }
 }
- 
- 
-/* ======Dashboard cards========== */
- 
- 
-@media (max-width: 480px) {
-  .dashboard-title {
-    font-size: 32px;
-    letter-spacing: -1px;
-  }
- 
-  .dashboard-card {
-    padding: 28px 20px;
-    min-height: 180px;
-  }
+
+@media (max-width: 1024px) {
+  .admin-sidebar { width: 220px; }
+  .admin-main,
+  .admin-main-full { margin-left: 220px; }
 }
- 

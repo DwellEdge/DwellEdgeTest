@@ -51,16 +51,16 @@ function Home() {
   const [current, setCurrent] = useState(0);
 
   const heroVideoRef = useRef(null);
-  const bgVideoRef   = useRef(null);
-  const promo1Ref    = useRef(null);
-  const promo2Ref    = useRef(null);
-  const trackRef     = useRef(null);
+  const bgVideoRef = useRef(null);
+  const promo1Ref = useRef(null);
+  const promo2Ref = useRef(null);
+  const trackRef = useRef(null);
 
   //  Play hero video every time slide changes
   useEffect(() => {
     const v = heroVideoRef.current;
     if (!v) return;
-    v.play().catch(() => {});
+    v.play().catch(() => { });
   }, [current]);
 
   // Force play bg + promo videos on mount
@@ -68,7 +68,7 @@ function Home() {
     [bgVideoRef, promo1Ref, promo2Ref].forEach((ref) => {
       const v = ref.current;
       if (!v) return;
-      v.play().catch(() => {});
+      v.play().catch(() => { });
     });
   }, []);
 
@@ -80,7 +80,7 @@ function Home() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.play().catch(() => {});
+            entry.target.play().catch(() => { });
           }
         });
       },
@@ -113,7 +113,7 @@ function Home() {
 
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 5001);
 
     return () => {
       elements.forEach((el) => fadeObserver.unobserve(el));
@@ -121,8 +121,53 @@ function Home() {
     };
   }, [slides.length]);
 
-  const scrollLeft  = () => trackRef.current?.scrollBy({ left: -300, behavior: "smooth" });
-  const scrollRight = () => trackRef.current?.scrollBy({ left:  300, behavior: "smooth" });
+  const scrollLeft = () => trackRef.current?.scrollBy({ left: -300, behavior: "smooth" });
+  const scrollRight = () => trackRef.current?.scrollBy({ left: 300, behavior: "smooth" });
+
+  const [activeTab, setActiveTab] = useState(null);
+
+  const tabData = [
+    {
+      key: "web", label: "Web Services", icon: "🌐",
+      title: "Web Services", subtitle: "Clean, fast websites and web apps built to grow with you",
+      points: [
+        { icon: "🖥️", label: "Custom Web Apps", desc: "React & Node.js applications tailored to your business needs" },
+        { icon: "📱", label: "Responsive Design", desc: "Mobile-friendly UIs that look sharp on every device" },
+        { icon: "⚡", label: "Performance Focused", desc: "Fast-loading, SEO-ready sites built for real-world traffic" },
+        { icon: "🔄", label: "Post-Launch Support", desc: "We stay with you after delivery — updates, fixes, and more" },
+      ],
+    },
+    {
+      key: "industry", label: "Industry Services", icon: "🏢",
+      title: "Industry Services", subtitle: "Software solutions shaped around the domain you operate in",
+      points: [
+        { icon: "🏥", label: "Healthcare", desc: "Appointment systems, patient portals, and clinic management tools" },
+        { icon: "🛒", label: "E-Commerce", desc: "Online stores with product management, payments, and order tracking" },
+        { icon: "🏨", label: "Hospitality", desc: "Booking systems and management dashboards for hotels and hostels" },
+        { icon: "🎓", label: "Education", desc: "Student portals, course platforms, and learning management systems" },
+      ],
+    },
+    {
+      key: "comm", label: "Communication", icon: "💬",
+      title: "Communication", subtitle: "We keep you in the loop at every step of the project",
+      points: [
+        { icon: "🗓️", label: "Sprint-Based Delivery", desc: "Work broken into clear cycles with regular demos and check-ins" },
+        { icon: "🎧", label: "Direct Team Access", desc: "Talk to the people actually building your product, not a middleman" },
+        { icon: "📊", label: "Progress Updates", desc: "Regular reports covering what's done, what's next, and any blockers" },
+        { icon: "🤝", label: "Discovery Call", desc: "We start with a free call to understand your goals before anything else" },
+      ],
+    },
+    {
+      key: "feature", label: "Feature Knowledge", icon: "⚙️",
+      title: "Feature Knowledge", subtitle: "Technologies and capabilities we bring to every project",
+      points: [
+        { icon: "🤖", label: "AI Integration", desc: "We embed AI features into your product — recommendations, predictions, and more" },
+        { icon: "☁️", label: "Cloud Deployment", desc: "Hosted on AWS or GCP with scalable infrastructure and CI/CD pipelines" },
+        { icon: "🔌", label: "API Integrations", desc: "We connect your app to payment gateways, CRMs, maps, and other tools" },
+        { icon: "🛡️", label: "Secure by Design", desc: "Built with OWASP standards, data encryption, and privacy best practices" },
+      ],
+    },
+  ];
 
   return (
     <div className="homepage">
@@ -146,7 +191,7 @@ function Home() {
             <h1>{slides[current].title}</h1>
             <p>{slides[current].text}</p>
             <div className="hero-buttons">
-              <Link to="/contact"  className="cta-btn">Contact Us</Link>
+              <Link to="/contact" className="cta-btn">Contact Us</Link>
               <Link to="/Services" className="cta-btn primary">Get Started</Link>
             </div>
           </div>
@@ -154,36 +199,62 @@ function Home() {
       </section>
 
       {/* ===== INDUSTRY / VIDEO BG SECTION ===== */}
-      <section className="video-bg-section">
-        <video
-          ref={bgVideoRef}
-          src={video3}
-          muted
-          playsInline
-          loop
-          autoPlay
-          className="section-bg-video"
-        />
+      <section className="video-bg-section"
+        onMouseLeave={() => setActiveTab(null)}>
+        <video ref={bgVideoRef} src={video3} muted playsInline loop autoPlay className="section-bg-video" />
         <div className="section-overlay" />
         <div className="section-content fade-up">
           <h1>Launch faster with 16+ Agentforce solutions</h1>
           <div className="industry-grid">
-            <div className="industry-box"><h3>Web Services</h3></div>
-            <div className="industry-box"><h3>Industry Services</h3></div>
-            <div className="industry-box"><h3>Communication</h3></div>
-            <div className="industry-box"><h3>Feature Aknowledge</h3></div>
+            {tabData.map((tab) => (
+              <div
+                key={tab.key}
+                className={`industry-box ${activeTab === tab.key ? "active" : ""}`}
+                onMouseEnter={() => setActiveTab(tab.key)}
+                onClick={() => setActiveTab(tab.key)}
+              >
+                <h3>{tab.label}</h3>
+                {activeTab === tab.key && <div className="tab-arrow" />}
+              </div>
+            ))}
           </div>
+          {activeTab && (
+            <div className="industry-popup">
+              <div className="popup-header">
+                <span className="popup-icon">{tabData.find(t => t.key === activeTab)?.icon}</span>
+                <div>
+                  <h3>{tabData.find(t => t.key === activeTab)?.title}</h3>
+                  <p>{tabData.find(t => t.key === activeTab)?.subtitle}</p>
+                </div>
+              </div>
+              <div className="popup-points">
+                {tabData.find(t => t.key === activeTab)?.points.map((pt, i) => (
+                  <div className="popup-point" key={i}>
+                    <span className="pt-icon">{pt.icon}</span>
+                    <div>
+                      <strong>{pt.label}</strong>
+                      <span>{pt.desc}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
       {/* ===== PROMO 1 ===== */}
       <section className="promo fade-up">
         <div className="promo-left">
-          <h1>Grow faster and work smarter.</h1>
-          <p>Start with DWELLEDGE Suite – built for small business with AI to help you grow.</p>
+          <h1>Got an idea? Let's build it together.</h1>
+          <p>
+            We're a growing tech team that turns your vision into real,
+            working software — web apps, platforms, and digital tools built
+            from scratch, just for you.
+          </p>
           <div className="promo-buttons">
-            <button className="cta-btn primary">Start for free</button>
-            <button className="cta-btn">Start demo</button>
+            <Link to="/careers" className="cta-btn primary">Start a Project</Link>
+            <Link to="/Services" className="cta-btn">See Our Work</Link>
           </div>
         </div>
         <div className="promo-right">
@@ -213,11 +284,15 @@ function Home() {
           />
         </div>
         <div className="promo-right">
-          <h2>3M+ conversations handled by DWELLEDGE AI</h2>
-          <p>66% automation, higher conversions, and smarter AI solutions for business growth.</p>
+          <h2>Built by a team that treats your project like their own.</h2>
+          <p>
+            No bloated processes, no account managers in the middle. You work
+            directly with the developers and designers building your product —
+            fast communication, honest timelines, and real ownership.
+          </p>
           <div className="promo-buttons">
-            <button className="cta-btn primary">See our stories</button>
-            <button className="cta-btn">Experience Help</button>
+            <Link to="/contact" className="cta-btn primary">Talk to Us</Link>
+            <Link to="/about" className="cta-btn">Who We Are</Link>
           </div>
         </div>
       </section>
@@ -255,14 +330,14 @@ function Home() {
           you achieve your goals faster and more efficiently.
         </p>
         <div className="giftcard-carousel">
-          <button className="carousel-arrow left"  onClick={scrollLeft}>‹</button>
+          <button className="carousel-arrow left" onClick={scrollLeft}>‹</button>
           <div className="giftcard-track" ref={trackRef}>
-            <div className="giftcard-box"><img src={img1} alt="App-support"  /><h3>App Support</h3></div>
-            <div className="giftcard-box"><img src={img2} alt="Ecommerce"    /><h3>E-Commerce App</h3></div>
-            <div className="giftcard-box"><img src={img3} alt="Healthcare"   /><h3>Healthcare Domain</h3></div>
-            <div className="giftcard-box"><img src={img4} alt="Hospital"     /><h3>Hospital Application</h3></div>
-            <div className="giftcard-box"><img src={img5} alt="Hostel"       /><h3>Hostel Application</h3></div>
-            <div className="giftcard-box"><img src={img6} alt="Webdesign"    /><h3>Web Design</h3></div>
+            <div className="giftcard-box"><img src={img1} alt="App-support" /><h3>App Support</h3></div>
+            <div className="giftcard-box"><img src={img2} alt="Ecommerce" /><h3>E-Commerce App</h3></div>
+            <div className="giftcard-box"><img src={img3} alt="Healthcare" /><h3>Healthcare Domain</h3></div>
+            <div className="giftcard-box"><img src={img4} alt="Hospital" /><h3>Hospital Application</h3></div>
+            <div className="giftcard-box"><img src={img5} alt="Hostel" /><h3>Hostel Application</h3></div>
+            <div className="giftcard-box"><img src={img6} alt="Webdesign" /><h3>Web Design</h3></div>
           </div>
           <button className="carousel-arrow right" onClick={scrollRight}>›</button>
         </div>

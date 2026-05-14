@@ -318,7 +318,6 @@ function EmployeePage() {
                         <table className="admin-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Code</th>
                                     <th>First Name</th>
                                     <th>Last Name</th>
@@ -340,7 +339,6 @@ function EmployeePage() {
                             <tbody>
                                 {employees.map((emp) => (
                                     <tr key={emp._id}>
-                                        <td>{emp._id?.slice(-5)}</td>
                                         <td>{emp.employee_code}</td>
                                         <td>{emp.first_name}</td>
                                         <td>{emp.last_name}</td>
