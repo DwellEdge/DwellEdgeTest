@@ -4,21 +4,19 @@ import "./style.css";
 import { Link, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "./api";
 
+const API = API_BASE_URL;
+
 function ApplyJob() {
-    const location = useLocation();   
+    const location = useLocation();
     const job = location.state;
 
     const [user, setUser] = useState({
-        jobId: job?._id || "",
-        firstName: "",
-        lastName: "",
+        jobId: job?._id || ""
+    });
+
+    const [errors, setErrors] = useState({
         emailId: "",
-        mobileNumber: "",
-        primarySkills: "",
-        secondarySkills: "",
-        totalExperience: "",
-        relevantExperience: "",
-        resume: null,
+        mobileNumber: ""
     });
 
     console.log("JOB DATA:", job);
@@ -29,50 +27,82 @@ function ApplyJob() {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
 
-        if (!user.jobId) {
-            alert("Unable to submit application: job information is missing.");
+        // FINAL VALIDATION BEFORE SUBMIT
+
+        const emailRegex = /^[a-z0-9._%+-]+@gmail\.com$/;
+
+        if (!emailRegex.test(user.emailId || "")) {
+            alert("Please enter valid Gmail address");
+            return;
+        }
+
+        if (!/^\d{10}$/.test(user.mobileNumber || "")) {
+            alert("Mobile number must be exactly 10 digits");
             return;
         }
 
         try {
+
             console.log("🚀 Sending:", user);
 
             const formData = new FormData();
-            formData.append("jobId", user.jobId);
-            formData.append("firstName", user.firstName.trim());
-            formData.append("lastName", user.lastName.trim());
-            formData.append("emailId", user.emailId.trim());
-            formData.append("mobileNumber", user.mobileNumber.trim());
-            formData.append("primarySkills", user.primarySkills.trim());
-            formData.append("secondarySkills", user.secondarySkills.trim());
-            formData.append("totalExperience", user.totalExperience.trim());
-            formData.append("relevantExperience", user.relevantExperience.trim());
 
-            if (user.resume) {
-                formData.append("resume", user.resume);
+            Object.keys(user).forEach(key => {
+                if (key !== 'resume') {
+                    formData.append(key, user[key]);
+                }
+            });
+
+            if (user.resume && typeof user.resume !== 'string') {
+                formData.append('resume', user.resume);
             }
 
-            const res = await fetch(`${API_BASE_URL}/apply`, {
+            const res = await fetch(`${API}/apply`, {
                 method: "POST",
-                body: formData,
+                body: formData
             });
 
             const text = await res.text();
+
             console.log("RAW RESPONSE:", text);
 
             const data = text ? JSON.parse(text) : {};
 
             if (res.ok) {
-                alert("Application Submitted 🚀");
+
+                // CLEAR FORM
+                setUser({
+                    jobId: job?._id || "",
+                    firstName: "",
+                    lastName: "",
+                    emailId: "",
+                    mobileNumber: "",
+                    primarySkills: "",
+                    secondarySkills: "",
+                    totalExperience: "",
+                    relevantExperience: "",
+                    resume: ""
+                });
+
+                // CLEAR FILE NAME
+                setFileName("");
+
+                // CLEAR ERRORS
+                setErrors({
+                    emailId: "",
+                    mobileNumber: ""
+                });
+
+                // SUCCESS POPUP
+                alert("Application Submitted Successfully ✅");
             } else {
-                alert(data.message || data.error || "Error occurred");
+                alert(data.error || "Error occurred");
             }
+
         } catch (err) {
             console.error("❌ Fetch Error:", err);
-            alert("Failed to submit application. Please try again.");
         }
     };
     return (
@@ -84,41 +114,44 @@ function ApplyJob() {
 
                 <h1 className="apply-title">Apply for {job?.jobTitle}</h1>
 
-                <form className="apply-form" onSubmit={handleSubmit}>
+                {/* PERSONAL INFO */}
+                <section className="apply-card">
+                    <h2>Personal Information</h2>
 
-                    {/* PERSONAL INFO */}
-                    <section className="apply-card">
-                        <h2>Personal Information</h2>
+                    <div className="apply-grid">
+                        <input name="firstName" placeholder="First Name" value={user.firstName || ""} onChange={handleChange} />
+                        <input name="lastName" placeholder="Last Name" value={user.lastName || ""} onChange={handleChange} />
+                        <div>
+                            <input
+                                type="email"
+                                name="emailId"
+                                placeholder="example@gmail.com"
+                                value={user.emailId || ""}
+                                onChange={handleChange}
+                            />
 
-                        <div className="apply-grid">
-                        <input
-                            name="firstName"
-                            placeholder="First Name"
-                            value={user.firstName}
-                            onChange={handleChange}
-                            required
-                        />
-                        <input
-                            name="lastName"
-                            placeholder="Last Name"
-                            value={user.lastName}
-                            onChange={handleChange}
-                            required
-                        />
-                        <input
-                            name="emailId"
-                            placeholder="Email"
-                            value={user.emailId}
-                            onChange={handleChange}
-                            required
-                        />
-                        <input
-                            name="mobileNumber"
-                            placeholder="Mobile Number"
-                            value={user.mobileNumber}
-                            onChange={handleChange}
-                            required
-                        />
+                            {errors.emailId && (
+                                <p style={{ color: "red", fontSize: "13px", marginTop: "4px" }}>
+                                    {errors.emailId}
+                                </p>
+                            )}
+                        </div>
+                        <div>
+                            <input
+                                type="text"
+                                name="mobileNumber"
+                                placeholder="10 Digit Mobile Number"
+                                maxLength="10"
+                                value={user.mobileNumber || ""}
+                                onChange={handleChange}
+                            />
+
+                            {errors.mobileNumber && (
+                                <p style={{ color: "red", fontSize: "13px", marginTop: "4px" }}>
+                                    {errors.mobileNumber}
+                                </p>
+                            )}
+                        </div>
                     </div>
                 </section>
 
@@ -127,30 +160,10 @@ function ApplyJob() {
                     <h2>Work Experience</h2>
 
                     <div className="apply-grid">
-                        <input
-                            name="primarySkills"
-                            placeholder="Primary Skills"
-                            value={user.primarySkills}
-                            onChange={handleChange}
-                        />
-                        <input
-                            name="secondarySkills"
-                            placeholder="Secondary Skills"
-                            value={user.secondarySkills}
-                            onChange={handleChange}
-                        />
-                        <input
-                            name="totalExperience"
-                            placeholder="Total Experience (years)"
-                            value={user.totalExperience}
-                            onChange={handleChange}
-                        />
-                        <input
-                            name="relevantExperience"
-                            placeholder="Relevant Experience (years)"
-                            value={user.relevantExperience}
-                            onChange={handleChange}
-                        />
+                        <input name="primarySkills" placeholder="Primary Skills" value={user.primarySkills || ""} onChange={handleChange} />
+                        <input name="secondarySkills" placeholder="Secondary Skills" value={user.secondarySkills || ""} onChange={handleChange} />
+                        <input name="totalExperience" placeholder="Total Experience (years)" value={user.totalExperience || ""} onChange={handleChange} />
+                        <input name="relevantExperience" placeholder="Relevant Experience (years)" value={user.relevantExperience || ""} onChange={handleChange} />
 
                         <div className="full">
                             <label>Upload Resume</label>
@@ -178,13 +191,11 @@ function ApplyJob() {
                         ← Back to Careers
                     </Link>
 
-                    <button type="submit" className="primary-btn">
+                    <button className="primary-btn" onClick={handleSubmit}>
                         Submit Application 🚀
                     </button>
 
                 </div>
-
-                </form>
 
             </main>
         </div>

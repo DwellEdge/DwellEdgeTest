@@ -51,8 +51,8 @@ function Founders() {
             {/* ===== ADMIN NAVBAR ===== */}
             <header className="admin-topnav">
                 <div className="admin-topnav-logo">
-                    <img src={dwelledgeLogo} alt="Dwelledge" className="admin-topnav-logo-img" />
-                    <span className="admin-topnav-logo-text">DWELLEDGE</span>
+                    <Link to="/"><img src={dwelledgeLogo} alt="Dwelledge" className="admin-topnav-logo-img" /></Link>
+                <span className="admin-topnav-logo-text"><Link to="/">DWELLEDGE</Link></span>
                 </div>
 
                 <nav className="admin-topnav-links">

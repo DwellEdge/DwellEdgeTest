@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 import "./innerpages.css";
 import Navbar from "./Navbar";
-import Footer from "./Footer";
 
 import Abtimg1 from "./images/whoweare.jpeg";
 import Abtimg2 from "./images/mission.jpeg";
@@ -131,10 +130,6 @@ const About = () => {
         </section>
 
       </div>
-
-      
-      <Footer />
-
     </div>
   );
 };

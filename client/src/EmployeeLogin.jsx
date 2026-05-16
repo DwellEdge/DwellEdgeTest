@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./innerpages.css";
+import { API_BASE_URL } from "./api";
+
+const API = API_BASE_URL;
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -14,7 +17,7 @@ function Login() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch("https://dwelledgetest.onrender.com/api/auth/login", {
+      const res = await fetch(`${API}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

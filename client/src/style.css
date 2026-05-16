@@ -19,10 +19,12 @@ body {
 }
 
 
-html, body {
+html,
+body {
+  margin: 0;
+  padding: 0;
   overflow-x: hidden;
-  overflow-y: scroll;
-  scrollbar-gutter: stable;
+  overflow-y: auto;
 }
 
 img, video, iframe {
@@ -36,8 +38,8 @@ img, video, iframe {
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 40px;
-  height: 70px;
+  padding: 0 60px;
+  height: 90px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(201,146,74,0.15);
@@ -57,8 +59,8 @@ img, video, iframe {
 }
 
 .logo-img {
-  width: 45px;
-  height: 35px;
+  width: 85px;
+  height: 108px;
   object-fit: contain;
 }
 
@@ -117,7 +119,8 @@ img, video, iframe {
 }
 
 .navbar nav ul li a,
-.nav-links li a {
+.nav-links li a,
+.nav-link {
   text-decoration: none;
   color: var(--text-mid);
   font-size: 14px;
@@ -126,8 +129,17 @@ img, video, iframe {
 }
 
 .navbar nav ul li a:hover,
-.nav-links li a:hover {
+.nav-links li a:hover,
+.nav-link:hover {
   color: var(--gold);
+}
+
+.nav-link.active,
+.nav-links li a.active {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  font-weight: 700;
 }
 
 .navbar nav ul li:last-child a {
@@ -150,6 +162,11 @@ img, video, iframe {
   position: relative;
   display: flex;
   align-items: center;
+ min-width: 42px;
+}
+
+.nav-links li:last-child {
+  min-width: 120px;
 }
 
 .navbar-avatar-btn {
@@ -194,13 +211,16 @@ img, video, iframe {
 }
 
 .nav-btn.primary:hover { background: #b8893c; }
+.navbar-right {
+    min-width: 50px;
+}
 
 /* ===== HERO ===== */
 .hero-banner {
   position: relative;
-  height: 100vh;
+  height: calc(100vh - 90px);
   overflow: hidden;
-  margin-top: 70px;
+  margin-top: 0;
 }
 
 .hero-bg-video {
@@ -586,9 +606,10 @@ em { color: var(--gold); }
 /* ===== CAREERS ===== */
 .career-page {
   background: var(--cream);
-  min-height: 100vh;
+  min-height: unset;
+  height: auto;
   color: var(--ink);
-  overflow: visible; /* FIX: no independent scroll */
+  overflow: visible; 
 }
 
 .career-hero {
@@ -726,7 +747,6 @@ em { color: var(--gold); }
   width: 85%;
   max-width: 900px;
   height: 85vh;
-  overflow-y: auto;
   border-radius: 20px;
   padding: 30px;
   position: relative;
@@ -886,7 +906,8 @@ em { color: var(--gold); }
 .contact-page {
   background: var(--cream);
   color: var(--ink);
-  min-height: 100vh;
+  min-height: unset;
+  height: auto;
   overflow: visible; 
 }
 
@@ -1068,7 +1089,12 @@ em { color: var(--gold); }
   border-radius: 18px;
 }
 
-.applications-table { min-width: 1700px; }
+.applications-table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
 
 .applications-table th {
   background: #f7f4ef;
@@ -1077,14 +1103,14 @@ em { color: var(--gold); }
   letter-spacing: 1px;
   text-transform: uppercase;
   padding: 18px 16px;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .applications-table td {
   padding: 18px 16px;
   font-size: 14px;
   color: #222;
-  white-space: nowrap;
+  white-space: normal;
   border-bottom: 1px solid #ececec;
 }
 
@@ -1415,3 +1441,83 @@ em { color: var(--gold); }
 .pt-icon { font-size: 20px; flex-shrink: 0; }
 .popup-point strong { display: block; font-size: 13px; font-weight: 600; margin-bottom: 2px; color: #111; }
 .popup-point span   { font-size: 12px; color: #555; line-height: 1.45; }
+
+/* ===== FIX DOUBLE SCROLLBAR ===== */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+/* Main app/root container */
+#root {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.home-page,
+.homepage,
+.main-container,
+.app-container {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: auto !important;
+}
+
+/* Hero section fix */
+.hero-banner {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Prevent sections from creating side scroll */
+section,
+div {
+  box-sizing: border-box;
+}
+
+/* Fix video overflow */
+.hero-bg-video,
+.section-bg-video,
+.promo-video {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Additional homepage scrollbar fixes */
+html, body, #root {
+  height: 100%;
+}
+
+.homepage {
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Carousel should only scroll horizontally */
+.homepage .giftcard-track {
+  overflow-y: hidden;
+}
+
+/* REMOVE INTERNAL SCROLLBARS */
+.job-popup,
+.apply-page,
+.contact-page,
+.career-page {
+  overflow: visible !important;
+}
+
+/* Fix mobile extra scrollbar */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden !important;
+  }
+
+  .navbar {
+    width: 100%;
+  }
+}

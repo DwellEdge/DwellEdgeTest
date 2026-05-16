@@ -59,44 +59,35 @@ function Applicants() {
   // ================= DOWNLOAD RESUME =================
 
   const handleDownload = async (app) => {
+  try {
+    const response = await fetch(`${API}/api/applications/${app._id}/resume`);
 
-    try {
-
-      const response = await fetch(
-        `${API}/api/applications/${app._id}/resume`
-      );
-
-      if (!response.ok) {
-        alert("Resume not found");
-        return;
-      }
-
-      const blob = await response.blob();
-
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-
-      link.href = url;
-
-      link.download = `${app.firstName}_Resume.pdf`;
-
-      document.body.appendChild(link);
-
-      link.click();
-
-      link.remove();
-
-      window.URL.revokeObjectURL(url);
-
-    } catch (err) {
-
-      console.error(err);
-
-      alert("Download failed");
-
+    if (!response.ok) {
+      alert("Resume not found");
+      return;
     }
-  };
+
+    const blob = await response.blob();
+
+    // Try to get filename from backend header
+    const disposition = response.headers.get("Content-Disposition") || "";
+    const match = disposition.match(/filename="(.+)"/);
+    const filename = match?.[1] || `${app.firstName || "Applicant"}_Resume`;
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error(err);
+    alert("Download failed");
+  }
+};
 
   // ================= CHANGE PASSWORD =================
 
@@ -145,15 +136,8 @@ function Applicants() {
 
         <div className="admin-topnav-logo">
 
-          <img
-            src={dwelledgeLogo}
-            alt="logo"
-            className="admin-topnav-logo-img"
-          />
-
-          <span className="admin-topnav-logo-text">
-            DWELLEDGE
-          </span>
+          <Link to="/"><img src={dwelledgeLogo} alt="Dwelledge" className="admin-topnav-logo-img" /></Link>
+                <span className="admin-topnav-logo-text"><Link to="/">DWELLEDGE</Link></span>
 
         </div>
 
@@ -457,7 +441,7 @@ function Applicants() {
             <tr key={app._id}>
 
               <td>
-                {app.jobId?.jobTitle || "N/A"}
+                {app.jobId?.jobTitle || app.jobTitle || "N/A"}
               </td>
 
               <td>

@@ -94,6 +94,7 @@ function JobListing() {
       type: job.type || "Full-time",
       description: job.description || "",
       requirements: job.requiredSkills || "",
+      isActive: job.isActive !== false,
     });
   };
 
@@ -110,6 +111,7 @@ function JobListing() {
           department: editForm.department,
           location: editForm.location,
           type: editForm.type,
+          isActive: editForm.isActive,
         }),
       });
       if (!res.ok) throw new Error("Failed to update job");
@@ -189,8 +191,8 @@ function JobListing() {
       {/* ===== ADMIN NAVBAR ===== */}
       <header className="admin-topnav">
         <div className="admin-topnav-logo">
-          <img src={dwelledgeLogo} alt="Dwelledge" className="admin-topnav-logo-img" />
-          <span className="admin-topnav-logo-text">DWELLEDGE</span>
+          <Link to="/"><img src={dwelledgeLogo} alt="Dwelledge" className="admin-topnav-logo-img" /></Link>
+          <span className="admin-topnav-logo-text"><Link to="/">DWELLEDGE</Link></span>
         </div>
 
         <nav className="admin-topnav-links">
@@ -239,75 +241,75 @@ function JobListing() {
         </div>
       )}
 
-      
+
 
       {/* ===== SIDEBAR ===== */}
-            <aside className="admin-sidebar">
+      <aside className="admin-sidebar">
 
-                {/* TOP SECTION */}
-                <div>
-                    <div className="admin-logo">
-                        <span className="admin-logo-mark">D</span>
-                        <div>
-                            <div className="admin-logo-name">DWELLEDGE</div>
-                            <div className="admin-logo-sub">Admin Panel</div>
-                        </div>
-                    </div>
+        {/* TOP SECTION */}
+        <div>
+          <div className="admin-logo">
+            <span className="admin-logo-mark">D</span>
+            <div>
+              <div className="admin-logo-name">DWELLEDGE</div>
+              <div className="admin-logo-sub">Admin Panel</div>
+            </div>
+          </div>
 
-                    <div className="admin-nav">
-                        <div
-                            className={`admin-nav-item ${window.location.pathname === "/admin/JobListing" ? "admin-nav-active" : ""}`}
-                            onClick={() => navigate("/admin/JobListing")}
-                        >
-                            💼 Job Listings
-                        </div>
+          <div className="admin-nav">
+            <div
+              className={`admin-nav-item ${window.location.pathname === "/admin/JobListing" ? "admin-nav-active" : ""}`}
+              onClick={() => navigate("/admin/JobListing")}
+            >
+              💼 Job Listings
+            </div>
 
-                        <div
-                            className={`admin-nav-item ${window.location.pathname === "/admin/employeepage" ? "admin-nav-active" : ""}`}
-                            onClick={() => navigate("/admin/employeepage")}
-                        >
-                            👨‍💼 Employees
-                        </div>
+            <div
+              className={`admin-nav-item ${window.location.pathname === "/admin/employeepage" ? "admin-nav-active" : ""}`}
+              onClick={() => navigate("/admin/employeepage")}
+            >
+              👨‍💼 Employees
+            </div>
 
-                        <div
-                            className={`admin-nav-item ${window.location.pathname === "/admin/founders" ? "admin-nav-active" : ""}`}
-                            onClick={() => navigate("/admin/founders")}
-                        >
-                            🏢 Founders
-                        </div>
+            <div
+              className={`admin-nav-item ${window.location.pathname === "/admin/founders" ? "admin-nav-active" : ""}`}
+              onClick={() => navigate("/admin/founders")}
+            >
+              🏢 Founders
+            </div>
 
-                        <div
-                            className={`admin-nav-item ${window.location.pathname === "/admin/Applicants" ? "admin-nav-active" : ""}`}
-                            onClick={() => navigate("/admin/Applicants")}
-                        >
-                            📄 Applications
-                        </div>
-                    </div>
-                </div>
+            <div
+              className={`admin-nav-item ${window.location.pathname === "/admin/Applicants" ? "admin-nav-active" : ""}`}
+              onClick={() => navigate("/admin/Applicants")}
+            >
+              📄 Applications
+            </div>
+          </div>
+        </div>
 
-                {/* BOTTOM SECTION */}
-                <div>
-                    <div
-                        className="admin-user-card"
-                        onClick={() => setShowProfile(true)}
-                        style={{ cursor: "pointer" }}
-                    >
-                        <div className="admin-user-avatar">
-                            {adminEmail?.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                            <div className="admin-user-email">{adminEmail}</div>
-                            <div className="admin-user-role">Administrator</div>
-                        </div>
-                        <span className="admin-profile-arrow">›</span>
-                    </div>
+        {/* BOTTOM SECTION */}
+        <div>
+          <div
+            className="admin-user-card"
+            onClick={() => setShowProfile(true)}
+            style={{ cursor: "pointer" }}
+          >
+            <div className="admin-user-avatar">
+              {adminEmail?.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <div className="admin-user-email">{adminEmail}</div>
+              <div className="admin-user-role">Administrator</div>
+            </div>
+            <span className="admin-profile-arrow">›</span>
+          </div>
 
-                    <button className="admin-logout-btn" onClick={handleLogout}>
-                        ↩ Logout
-                    </button>
-                </div>
+          <button className="admin-logout-btn" onClick={handleLogout}>
+            ↩ Logout
+          </button>
+        </div>
 
-            </aside>
+      </aside>
 
 
       <main className="admin-main">
@@ -491,6 +493,15 @@ function JobListing() {
                     <option>Part-time</option>
                     <option>Contract</option>
                     <option>Internship</option>
+                  </select>
+                </div>
+              </div>
+              <div className="admin-form-row">
+                <div className="admin-form-field">
+                  <label>Status</label>
+                  <select value={editForm.isActive ? "Active" : "Inactive"} onChange={(e) => setEditForm({ ...editForm, isActive: e.target.value === "Active" })}>
+                    <option>Active</option>
+                    <option>Inactive</option>
                   </select>
                 </div>
               </div>

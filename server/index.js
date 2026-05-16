@@ -6,26 +6,18 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import multer from "multer";
 import path from "path";
+import fs from "fs";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
 const app = express();
-// ================= MULTER CONFIG =================
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
+const storage = multer.memoryStorage();
 
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
+const upload = multer({
+  storage,
 });
-
-const upload = multer({ storage });
-
-// Serve uploaded files
-app.use("/uploads", express.static("uploads"));
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -38,25 +30,16 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true); // allow non-browser requests
-      if (
-        allowedOrigins.includes(origin) ||
-        origin.startsWith("https://dwelledge.github.io")
-      ) {
-        return callback(null, true);
-      }
-      callback(
-        new Error(`CORS policy does not allow access from origin ${origin}`),
-      );
-    },
+    origin: allowedOrigins,
+credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 
 app.options("*", cors());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
 
 /* ================= CONFIG ================= */
 const PORT = process.env.PORT || 5000; // 🔥 changed to 5000 to avoid conflict
@@ -106,32 +89,72 @@ const careerSchema = new mongoose.Schema({
   createdDate: { type: Date, default: Date.now },
 });
 
-const Career = mongoose.model("Career", careerSchema, "careersCollection");
-
+const Career = mongoose.model("Career", careerSchema);
 // APPLICATIONS
 const applicationSchema = new mongoose.Schema({
   jobId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Career",
-    required: true,
   },
+
+  jobTitle: {
+    type: String,
+    default: "N/A",
+  },
+
   firstName: String,
   lastName: String,
   mobileNumber: String,
   emailId: String,
+
   primarySkills: String,
   secondarySkills: String,
+
   totalExperience: Number,
   relevantExperience: Number,
-  resume: String,
-  submittedDate: { type: Date, default: Date.now },
+
+  resume: {
+    data: String,
+    contentType: String,
+    fileName: String,
+  },
+
+  submittedDate: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Application = mongoose.model(
   "Application",
   applicationSchema,
-  "CareerApplications",
+  "careerApplications",
 );
+
+app.get("/api/applications", async (req, res) => {
+
+  try {
+
+    const applications = await Application.find()
+      .populate("jobId")
+      .sort({ submittedDate: -1 });
+
+    console.log("APPLICATIONS:", applications);
+
+    res.status(200).json(applications);
+
+  } catch (err) {
+
+    console.log("FETCH APPLICATION ERROR:", err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+
+  }
+
+});
 
 /* ================= ROUTES ================= */
 
@@ -141,6 +164,18 @@ app.get("/", (req, res) => {
 });
 
 /* ================= AUTH ================= */
+
+// ================= HELPERS =================
+
+const normalizeEmail = (email) => {
+  return String(email || "")
+    .trim()
+    .toLowerCase();
+};
+
+const escapeRegex = (text) => {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
 
 // REGISTER
 app.post("/api/auth/register", async (req, res) => {
@@ -238,89 +273,91 @@ app.patch("/careers/:id", async (req, res) => {
 });
 
 /* ================= APPLICATION ================= */
-
 app.post("/apply", upload.single("resume"), async (req, res) => {
+
   try {
+
+    console.log("===== APPLY API HIT =====");
+
     console.log("BODY:", req.body);
+
     console.log("FILE:", req.file);
 
-    const {
-      jobId,
-      firstName,
-      lastName,
-      mobileNumber,
-      emailId,
-      primarySkills,
-      secondarySkills,
-      totalExperience,
-      relevantExperience,
-    } = req.body;
-
-    if (!jobId || !firstName || !lastName || !emailId) {
-      return res.status(400).json({
-        message: "Missing required application fields.",
-      });
-    }
-
     const application = new Application({
-      jobId: new mongoose.Types.ObjectId(jobId),
-      firstName: String(firstName || "").trim(),
-      lastName: String(lastName || "").trim(),
-      mobileNumber: String(mobileNumber || "").trim(),
-      emailId: String(emailId || "").trim(),
-      primarySkills: String(primarySkills || "").trim(),
-      secondarySkills: String(secondarySkills || "").trim(),
-      totalExperience: Number(totalExperience) || 0,
-      relevantExperience: Number(relevantExperience) || 0,
-      resume: req.file ? req.file.filename : "",
+
+      jobId: req.body.jobId || null,
+
+      jobTitle: req.body.jobTitle || "N/A",
+
+      firstName: req.body.firstName || "",
+
+      lastName: req.body.lastName || "",
+
+      mobileNumber: req.body.mobileNumber || "",
+
+      emailId: req.body.emailId || "",
+
+      primarySkills: req.body.primarySkills || "",
+
+      secondarySkills: req.body.secondarySkills || "",
+
+      totalExperience: Number(req.body.totalExperience) || 0,
+
+      relevantExperience: Number(req.body.relevantExperience) || 0,
+
+      resume: req.file
+        ? {
+            data: req.file.buffer.toString("base64"),
+            contentType: req.file.mimetype,
+            fileName: req.file.originalname,
+          }
+        : null,
     });
 
     await application.save();
 
-    res.json({
+    console.log("✅ Application Saved");
+
+    res.status(200).json({
       success: true,
       message: "Application submitted successfully",
     });
+
   } catch (err) {
-    console.log(err);
+
+    console.log("❌ APPLY ERROR:", err);
 
     res.status(500).json({
+      success: false,
       message: err.message,
     });
   }
 });
 
-// GET APPLICATIONS
-app.get("/api/applications", async (req, res) => {
-  try {
-    const applications = await Application.find()
-      .populate("jobId")
-      .sort({ submittedDate: -1 });
-
-    res.json(applications);
-  } catch (err) {
-    res.status(500).json({
-      message: err.message,
-    });
-  }
-});
-
-// DOWNLOAD RESUME
 app.get("/api/applications/:id/resume", async (req, res) => {
   try {
-    const appData = await Application.findById(req.params.id);
+    const application = await Application.findById(req.params.id);
 
-    if (!appData || !appData.resume) {
-      return res.status(404).send("Resume not found");
+    if (!application || !application.resume || !application.resume.data) {
+      return res.status(404).json({ message: "Resume not found" });
     }
 
-    const filePath = `uploads/${appData.resume}`;
+    const { data, contentType, fileName } = application.resume;
 
-    res.download(filePath);
+    const buffer = Buffer.from(data, "base64");
+
+    // Force browser download
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${fileName || "resume.pdf"}"`,
+    );
+    res.setHeader("Content-Type", contentType || "application/octet-stream");
+    res.setHeader("Content-Length", buffer.length);
+
+    return res.status(200).send(buffer);
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
-    });
+    console.log("RESUME DOWNLOAD ERROR:", err);
+    return res.status(500).json({ message: "Download failed" });
   }
 });
 
@@ -333,6 +370,236 @@ app.get("/test-db", async (req, res) => {
   } catch {
     res.send("❌ DB NOT Connected");
   }
+});
+
+app.post("/apply-test", async (req, res) => {
+  try {
+    console.log("===== APPLY TEST HIT =====");
+    console.log(req.body);
+
+    const {
+      jobId,
+      jobTitle,
+      firstName,
+      lastName,
+      mobileNumber,
+      emailId,
+      primarySkills,
+      secondarySkills,
+      totalExperience,
+      relevantExperience,
+    } = req.body;
+
+    const application = new Application({
+      jobId,
+
+      firstName,
+      lastName,
+
+      mobileNumber,
+      emailId,
+
+      primarySkills,
+      secondarySkills,
+
+      totalExperience: Number(totalExperience) || 0,
+      relevantExperience: Number(relevantExperience) || 0,
+
+      resume: "",
+    });
+
+    await application.save();
+
+    console.log("✅ Saved to MongoDB");
+
+    res.status(200).json({
+      success: true,
+      message: "Application submitted successfully",
+    });
+  } catch (err) {
+    console.log("❌ SAVE ERROR:", err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+
+/*===================Employee=======*/
+// 👨‍💼 EMPLOYEE MODEL
+const employeeSchema = new mongoose.Schema({
+  employee_code: { type: String, required: true, unique: true },
+  first_name: String,
+  last_name: String,
+  mobile_number: String,
+  email_id: String,
+  date_of_birth: Date,
+  date_of_joining: Date,
+  designation: String,
+  employment_type: String,
+  work_location: String,
+  status: { type: String, default: "Active" },
+  date_of_exit: Date,
+  created_date: { type: Date, default: Date.now },
+  updated_date: { type: Date, default: Date.now },
+});
+
+const Employee = mongoose.model("Employee", employeeSchema, "EmployeeDetails");
+
+/* ================= EMPLOYEES ================= */
+
+// GET all employees
+// GET ALL EMPLOYEES
+app.get("/api/employees", async (req, res) => {
+  const data = await Employee.find();
+  res.json(data);
+});
+
+// ADD EMPLOYEE
+app.post("/api/employees", async (req, res) => {
+  const emp = await Employee.create(req.body);
+  res.json(emp);
+});
+
+// DELETE
+app.delete("/api/employees/:id", async (req, res) => {
+  await Employee.findByIdAndDelete(req.params.id);
+  res.json({ message: "Deleted" });
+});
+
+// UPDATE employee
+app.patch("/employees/:id", async (req, res) => {
+  const emp = await Employee.findByIdAndUpdate(
+    req.params.id,
+    { ...req.body, updated_date: new Date() },
+    { new: true },
+  );
+  res.json(emp);
+});
+
+// 👨‍💼 FOUNDERS MODEL
+const founderSchema = new mongoose.Schema({
+  founder_id: String,
+  founder_name: String,
+  first_name: String,
+  last_name: String,
+  status: String,
+  created_date: { type: Date, default: Date.now },
+  updated_date: { type: Date, default: Date.now },
+});
+
+const Founder = mongoose.model("Founder", founderSchema, "FounderDetails");
+
+/* ================= FOUNDERS ================= */
+
+// GET ALL
+app.get("/api/founders", async (req, res) => {
+  try {
+    const founders = await Founder.find().sort({ created_date: -1 });
+    res.json(founders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ADD
+app.post("/api/founders", async (req, res) => {
+  try {
+    const founder = await Founder.create(req.body);
+    res.json(founder);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE
+app.delete("/api/founders/:id", async (req, res) => {
+  try {
+    await Founder.findByIdAndDelete(req.params.id);
+    res.json({ message: "Deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/*=======Contactus========*/
+
+app.post("/contact", async (req, res) => {
+
+  try {
+
+    console.log("BODY:", req.body);
+
+    const {
+      fullName,
+      email,
+      organization,
+      mobile,
+      country,
+      jobTitle,
+      message
+    } = req.body;
+
+    const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+const mailOptions = {
+  from: process.env.EMAIL_USER,
+  to: process.env.EMAIL_TO || "triosntechies@gmail.com",
+  subject: "New Contact Form Submission",
+  html: `
+        <div style="font-family: Arial; padding: 20px;">
+
+          <h2 style="color:#333;">New Contact Request</h2>
+
+          <hr/>
+
+          <p><b>Full Name:</b> ${fullName}</p>
+
+          <p><b>Email:</b> ${email}</p>
+
+          <p><b>Organization:</b> ${organization}</p>
+
+          <p><b>Mobile:</b> ${mobile}</p>
+
+          <p><b>Country:</b> ${country}</p>
+
+          <p><b>Job Title:</b> ${jobTitle}</p>
+
+          <h3>Message:</h3>
+
+          <p>${message}</p>
+
+        </div>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    console.log("✅ Email Sent");
+
+    res.status(200).json({
+      success: true,
+      message: "Email Sent Successfully"
+    });
+
+  } catch (err) {
+
+    console.log("❌ EMAIL ERROR:", err);
+
+    res.status(500).json({
+      success: false,
+      message: "Email Failed"
+    });
+
+  }
+
 });
 
 /* ================= START SERVER ================= */

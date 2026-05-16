@@ -4,14 +4,19 @@ import "./style.css";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
+// Hero slider videos (6 new)
+import slide1 from "./vedioes/TechnologyAbstract.mp4";
+import slide2 from "./vedioes/office.mp4";
+import slide3 from "./vedioes/teaching.mp4";
+import slide4 from "./vedioes/peoplecoding.mp4";
+import slide5 from "./vedioes/keyboardtyping.mp4";
+import slide6 from "./vedioes/falling blocks.mp4";
+
+// Promo section videos 
 import video1 from "./vedioes/ai-animation-video.mp4";
 import video2 from "./vedioes/successful-marketing.mp4";
-import video3 from "./vedioes/backside-motion-poster.mp4";
 
-import slide1 from "./vedioes/birds-vedio.mp4";
-import slide2 from "./vedioes/flowers-vedio.mp4";
-import slide3 from "./vedioes/green-aeroplane-vedio.mp4";
-
+// Images
 import image1 from "./images/buildings.png";
 import image2 from "./images/design-building.png";
 import image3 from "./images/nature-buildings.png";
@@ -22,75 +27,76 @@ import img4 from "./images/hospital-application.webp";
 import img5 from "./images/hostal-application.jpg";
 import img6 from "./images/webdegin-image.avif";
 
-console.log("video1:", video1);
-console.log("video2:", video2);
-console.log("video3:", video3);
-console.log("slide1:", slide1);
-console.log("slide2:", slide2);
-console.log("slide3:", slide3);
-
 function Home() {
   const slides = [
     {
       video: slide1,
-      title: "Empowering Talent Transformations",
-      text: "Embrace the talent revolution and build future-ready skills with DWELLEDGE technologies.",
+      title: "Building Blocks of Innovation",
+      text: "We construct powerful digital foundations that help your business scale with confidence.",
     },
     {
       video: slide2,
+      title: "Code That Powers Your Vision",
+      text: "Our expert developers write clean, efficient code to bring your ideas to life.",
+    },
+    {
+      video: slide3,
       title: "Innovative Digital Solutions",
       text: "We design scalable web, AI, and cloud solutions that accelerate business growth and efficiency.",
     },
     {
-      video: slide3,
+      video: slide4,
+      title: "Empowering Talent Transformations",
+      text: "Embrace the talent revolution and build future-ready skills with DWELLEDGE technologies.",
+    },
+    {
+      video: slide5,
+      title: "Upskill Your Talent with Us",
+      text: "We provide training and mentorship programs to help your team grow with modern technology.",
+    },
+    {
+      video: slide6,
       title: "Technology That Drives Success",
       text: "From startups to enterprises, DWELLEDGE delivers smart, reliable, and high-performance software solutions.",
     },
   ];
 
   const [current, setCurrent] = useState(0);
-
   const heroVideoRef = useRef(null);
-  const bgVideoRef = useRef(null);
   const promo1Ref = useRef(null);
   const promo2Ref = useRef(null);
   const trackRef = useRef(null);
 
-  //  Play hero video every time slide changes
+  // Play hero video every time slide changes
   useEffect(() => {
     const v = heroVideoRef.current;
     if (!v) return;
     v.play().catch(() => { });
   }, [current]);
 
-  // Force play bg + promo videos on mount
+  // play promo videos on mount
   useEffect(() => {
-    [bgVideoRef, promo1Ref, promo2Ref].forEach((ref) => {
+    [promo1Ref, promo2Ref].forEach((ref) => {
       const v = ref.current;
       if (!v) return;
       v.play().catch(() => { });
     });
   }, []);
 
-  // Play videos when they scroll into view
+  // Play promo videos when scrolled into view
   useEffect(() => {
-    const refs = [bgVideoRef, promo1Ref, promo2Ref];
-
+    const refs = [promo1Ref, promo2Ref];
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.play().catch(() => { });
-          }
+          if (entry.isIntersecting) entry.target.play().catch(() => { });
         });
       },
       { threshold: 0.1 }
     );
-
     refs.forEach((ref) => {
       if (ref.current) observer.observe(ref.current);
     });
-
     return () => {
       refs.forEach((ref) => {
         if (ref.current) observer.unobserve(ref.current);
@@ -113,7 +119,7 @@ function Home() {
 
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
-    }, 5001);
+    }, 5000);
 
     return () => {
       elements.forEach((el) => fadeObserver.unobserve(el));
@@ -121,8 +127,10 @@ function Home() {
     };
   }, [slides.length]);
 
-  const scrollLeft = () => trackRef.current?.scrollBy({ left: -300, behavior: "smooth" });
-  const scrollRight = () => trackRef.current?.scrollBy({ left: 300, behavior: "smooth" });
+  const scrollLeft = () =>
+    trackRef.current?.scrollBy({ left: -300, behavior: "smooth" });
+  const scrollRight = () =>
+    trackRef.current?.scrollBy({ left: 300, behavior: "smooth" });
 
   const [activeTab, setActiveTab] = useState(null);
 
@@ -171,20 +179,21 @@ function Home() {
 
   return (
     <div className="homepage">
-
       <Navbar />
 
       {/* ===== HERO ===== */}
       <section className="hero-banner">
-        <video
-          ref={heroVideoRef}
-          src={slides[current].video}
-          muted
-          playsInline
-          loop
-          autoPlay
-          className="hero-bg-video active"
-        />
+        {slides.map((slide, i) => (
+          <video
+            key={i}
+            src={slide.video}
+            muted
+            playsInline
+            loop
+            autoPlay
+            className={`hero-bg-video ${i === current ? "active" : ""}`}
+          />
+        ))}
         <div className="hero-overlay" />
         <div className="hero-content">
           <div className="hero-text">
@@ -195,13 +204,20 @@ function Home() {
               <Link to="/Services" className="cta-btn primary">Get Started</Link>
             </div>
           </div>
+          <div className="hero-dots">
+            {slides.map((_, i) => (
+              <span
+                key={i}
+                className={`hero-dot ${i === current ? "active" : ""}`}
+                onClick={() => setCurrent(i)}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ===== INDUSTRY / VIDEO BG SECTION ===== */}
-      <section className="video-bg-section"
-        onMouseLeave={() => setActiveTab(null)}>
-        <video ref={bgVideoRef} src={video3} muted playsInline loop autoPlay className="section-bg-video" />
+      {/* ===== INDUSTRY SECTION ===== */}
+      <section className="video-bg-section" onMouseLeave={() => setActiveTab(null)}>
         <div className="section-overlay" />
         <div className="section-content fade-up">
           <h1>Launch faster with 16+ Agentforce solutions</h1>
@@ -246,7 +262,7 @@ function Home() {
       {/* ===== PROMO 1 ===== */}
       <section className="promo fade-up">
         <div className="promo-left">
-          <h1>Got an idea? Let's build it together.</h1>
+          <h1>Got An Idea? Let's Build It Together.</h1>
           <p>
             We're a growing tech team that turns your vision into real,
             working software — web apps, platforms, and digital tools built
@@ -284,7 +300,7 @@ function Home() {
           />
         </div>
         <div className="promo-right">
-          <h2>Built by a team that treats your project like their own.</h2>
+          <h2>Built By A Team That Treats Your Project Like Their Own.</h2>
           <p>
             No bloated processes, no account managers in the middle. You work
             directly with the developers and designers building your product —
@@ -299,7 +315,8 @@ function Home() {
 
       {/* ===== BOTTOM CARDS ===== */}
       <section className="bottom-section fade-up">
-        <h1 className="bottom-heading">Cutting edge solutions to power up your business.</h1>
+        <h1 className="bottom-heading">Cutting Edge Solutions To Power Up Your Business.</h1>
+
         <div className="bottom-grid">
           <div className="bottom-card">
             <img src={image2} alt="Industries" />
@@ -324,7 +341,8 @@ function Home() {
 
       {/* ===== CAROUSEL ===== */}
       <section className="giftcard-section fade-up">
-        <h2 className="giftcard-heading">Popular development</h2>
+        <h2 className="giftcard-heading">Popular Development</h2>
+
         <p className="giftcard-subheading">
           Explore our most popular development solutions, designed to help
           you achieve your goals faster and more efficiently.
@@ -344,7 +362,6 @@ function Home() {
       </section>
 
       <Footer />
-
     </div>
   );
 }

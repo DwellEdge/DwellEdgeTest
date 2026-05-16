@@ -15,13 +15,6 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
-
-html, body {
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: 100%;
-}
-
 body {
   font-family: 'Epilogue', sans-serif;
   background: var(--cream);
@@ -129,12 +122,8 @@ body {
 
 /* ================= SERVICES PAGE ================= */
 .services-page {
-  min-height: 100vh;
-  background: var(--cream);
-  position: relative;
-  padding-left: 16px;
-  padding-right: 16px;
-  overflow: visible; 
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .services-page::before {
@@ -166,8 +155,6 @@ body {
 /* ================= SERVICES CONTENT ================= */
 .services-content {
   padding: 160px 32px 120px;
-  position: relative;
-  z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -240,9 +227,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  max-width: 75%;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
 }
 
 .service-card-link {
@@ -269,7 +254,6 @@ body {
   transition: transform 0.35s ease,
               box-shadow 0.35s ease,
               border-color 0.35s ease;
-  overflow: hidden;
 }
 
 .service-card::before {
@@ -359,26 +343,24 @@ body {
   }
 }
 
+
 /* ================= SERVICE DETAIL PAGE ================= */
 .sd-page {
   min-height: 100vh;
   background: var(--cream);
   position: relative;
-  overflow-x: hidden;
-  overflow-y: visible; 
 }
 
 .sd-hero {
   min-height: auto;
   padding: 0 64px 20px;
   position: relative;
-  overflow: hidden;
   background: var(--cream);
 }
 
 .sd-back-link {
   display: inline-flex;
-  align-items: center;
+  align-self: flex-start;
   gap: 8px;
   color: var(--text-muted);
   text-decoration: none;
@@ -449,6 +431,21 @@ body {
   max-width: 480px;
   border-left: 2px solid var(--gold);
   padding-left: 18px;
+}
+
+.sd-hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sd-hero-tagline {
+  border-left: none;
+  padding-left: 0;
+  border-bottom: 2px solid var(--gold);
+  padding-bottom: 8px;
+  text-align: center;
 }
 
 .sd-body {
@@ -721,7 +718,10 @@ body {
   display: flex;
   flex-direction: column;
   background: var(--cream);
-  overflow: visible; 
+  height: auto;
+  overflow: auto;
+overflow-y: scroll;
+height: 100vh;
 }
 
 .about-hero {
@@ -732,7 +732,6 @@ body {
   align-items: flex-start;
   padding: 0 44px 20px;
   position: relative;
-  overflow: hidden;
   background: linear-gradient(160deg, rgba(201,146,74,0.07) 0%, transparent 50%), var(--cream);
 }
 
@@ -904,7 +903,6 @@ body {
 }
 
 .about-image-wrapper {
-  overflow: hidden;
   border-radius: 16px;
   flex-shrink: 0;
   width: 45%;
@@ -931,7 +929,6 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
   font-family: 'Epilogue', sans-serif;
 }
 
@@ -981,7 +978,6 @@ body {
   max-width: 1000px;
   min-height: 600px;
   border-radius: 24px;
-  overflow: hidden;
   box-shadow: 0 32px 80px rgba(26,22,18,0.12);
   margin: 80px 24px;
 }
@@ -994,7 +990,6 @@ body {
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  overflow: hidden;
 }
 
 .login-left::before {
@@ -1223,7 +1218,6 @@ body {
   background: #f0ebe0;
   font-family: 'Epilogue', sans-serif;
   padding-top: 90px;
-  overflow: visible; 
 }
 
 .admin-sidebar {
@@ -1238,8 +1232,6 @@ body {
   top: 90px;
   left: 0;
   height: calc(100vh - 90px); 
-  overflow-y: auto;            
-  overflow-x: hidden;
   padding-bottom: 120px;
 }
 
@@ -1251,7 +1243,7 @@ body {
 }
 
 .admin-logo-mark {
-  width: 40px; height: 40px;
+  width: 90px; height: 90px;
   background: #c9924a;
   color: #1a1612;
   border-radius: 10px;
@@ -1332,7 +1324,6 @@ body {
   color: #f5f0e8;
   font-weight: 500;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
   max-width: 140px;
 }
@@ -1367,8 +1358,15 @@ body {
   flex: 1;
   padding: 40px 48px;
   margin-left: 260px;
-  overflow: visible; 
+  overflow: visible;
   min-height: calc(100vh - 90px);
+  max-width: calc(100vw - 260px);
+  width: auto;
+}
+
+.admin-page {
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .admin-header {
@@ -1455,10 +1453,29 @@ body {
 .admin-table-wrapper {
   background: white;
   border-radius: 20px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   border: 1px solid rgba(26,22,18,0.06);
   box-shadow: 0 4px 24px rgba(26,22,18,0.06);
   margin-top: 20px;
+}
+
+.admin-table-wrapper table {
+  min-width: 100%;
+}
+
+.admin-table-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.admin-table-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.admin-table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(201,146,74,0.4);
+  border-radius: 999px;
 }
 
 .admin-table-header {
@@ -1673,7 +1690,6 @@ body {
   width: 100%;
   max-width: 600px;
   max-height: 90vh;
-  overflow-y: auto;
   box-shadow: 0 32px 80px rgba(26,22,18,0.2);
   animation: modalIn 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
 }
@@ -1968,7 +1984,7 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 0 60px;
   z-index: 1000;
 }
@@ -1978,10 +1994,11 @@ body {
   align-items: center;
   gap: 12px;
   text-decoration: none;
+  margin-right: auto;
 }
 
 .admin-topnav-logo-img {
-  height: 38px;
+  height: 58px;
   width: auto;
 }
 
@@ -1993,10 +2010,20 @@ body {
   letter-spacing: 0.5px;
 }
 
+.admin-topnav-logo-text a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.admin-topnav-logo-text a:hover {
+  color: #ffffff;
+}
+
 .admin-topnav-links {
   display: flex;
   align-items: center;
   gap: 24px;
+  margin-right:24px;
 }
 
 .admin-topnav-links a {
@@ -2169,8 +2196,6 @@ body {
   min-height: 100vh;
   background: var(--cream);
   position: relative;
-  overflow-x: hidden;
-  overflow-y: visible; 
 }
 
 .dashboard-page::before {
@@ -2276,7 +2301,6 @@ body {
   transition: transform 0.35s ease,
               box-shadow 0.35s ease,
               border-color 0.35s ease;
-  overflow: hidden;
   cursor: pointer;
 }
 
@@ -2375,7 +2399,6 @@ body {
   margin-left: 260px;
   width: calc(100% - 260px);
   padding: 40px 48px;
-  overflow: visible;
 }
 
 .admin-back-btn {
@@ -2470,7 +2493,6 @@ body {
   .admin-stats { grid-template-columns: repeat(2, 1fr); }
   .admin-header { flex-direction: column; align-items: flex-start; gap: 16px; }
   .admin-add-btn { width: 100%; text-align: center; }
-  .admin-table-wrapper { overflow-x: auto; }
   .admin-table { min-width: 600px; }
 }
 

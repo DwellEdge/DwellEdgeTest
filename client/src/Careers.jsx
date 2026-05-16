@@ -2,19 +2,22 @@ import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import bgImage from "./images/career-image.jpg";
 import "./style.css";
-import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "./api";
+
+const API = API_BASE_URL;
 
 function Careers() {
   const [jobs, setJobs] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedJob, setSelectedJob] = useState(null);
+  const [remoteFilter, setRemoteFilter] = useState(false);
+  const [hybridFilter, setHybridFilter] = useState(false);
   const navigate = useNavigate();
 
   /* FETCH JOBS */
   useEffect(() => {
-    fetch(`${API_BASE_URL}/careers`)
+    fetch(`${API}/careers`)
       .then((res) => res.json())
       .then((data) => {
         console.log("API DATA:", data);
@@ -32,10 +35,29 @@ function Careers() {
       });
   }, []);
 
-  /* SEARCH FILTER */
-  const filteredJobs = jobs.filter((job) =>
-    job.jobTitle?.toLowerCase().includes(search.toLowerCase())
-  );
+  /* SEARCH + WORKING TYPE FILTER */
+  const filteredJobs = jobs.filter((job) => {
+    const titleMatch = job.jobTitle?.toLowerCase().includes(search.toLowerCase());
+    if (!titleMatch) return false;
+
+    const location = (job.location || "Remote").toString().toLowerCase().trim();
+    const isRemoteJob = location.includes("remote");
+    const isHybridJob = !isRemoteJob && location !== "";
+
+    if (remoteFilter && hybridFilter) {
+      return isRemoteJob || isHybridJob;
+    }
+
+    if (remoteFilter) {
+      return isRemoteJob;
+    }
+
+    if (hybridFilter) {
+      return isHybridJob;
+    }
+
+    return true;
+  });
 
   return (
     <div className="career-page">
@@ -109,9 +131,23 @@ function Careers() {
             <h3>Filters</h3>
 
             <div className="filter-section">
-              <p>Experience Level</p>
-              <label><input type="checkbox" /> Fresher</label>
-              <label><input type="checkbox" /> Experienced</label>
+              <p>Working Type</p>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={remoteFilter}
+                  onChange={(e) => setRemoteFilter(e.target.checked)}
+                />
+                Remote
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={hybridFilter}
+                  onChange={(e) => setHybridFilter(e.target.checked)}
+                />
+                Hybrid
+              </label>
             </div>
           </div>
         </div>
@@ -179,8 +215,6 @@ function Careers() {
           </div>
         </div>
       )}
-
-      <Footer />
     </div>
   );
 }

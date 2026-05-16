@@ -10,12 +10,12 @@ function EmployeePage() {
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    
+
     const [showProfile, setShowProfile] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
 
-    
+
     const [showForm, setShowForm] = useState(false);
 
     const [deleteConfirm, setDeleteConfirm] = useState(null);
@@ -35,7 +35,6 @@ function EmployeePage() {
     const activeEmployees = employees.filter((e) => e.status === "Active").length;
 
     const emptyForm = {
-        employee_id: "",
         employee_code: "",
         first_name: "",
         last_name: "",
@@ -49,6 +48,7 @@ function EmployeePage() {
         date_of_birth: "",
         status: "Active",
     };
+
     const [form, setForm] = useState(emptyForm);
 
     const showToast = (msg, type = "success") => {
@@ -56,14 +56,16 @@ function EmployeePage() {
         setTimeout(() => setToast(null), 3000);
     };
 
-    
     useEffect(() => {
         const close = () => setShowDropdown(false);
-        if (showDropdown) document.addEventListener("click", close);
+
+        if (showDropdown) {
+            document.addEventListener("click", close);
+        }
+
         return () => document.removeEventListener("click", close);
     }, [showDropdown]);
 
-    
     useEffect(() => {
         fetch(`${API}/api/employees`)
             .then((res) => res.json())
@@ -74,13 +76,19 @@ function EmployeePage() {
             .finally(() => setLoading(false));
     }, []);
 
-    // ADD EMPLOYEE — posts to /api/employees (EmployeeDetails collection)
+    // ADD EMPLOYEE
     const handleAdd = async (e) => {
+
         e.preventDefault();
+
         try {
+
             const res = await fetch(`${API}/api/employees`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                },
+
                 body: JSON.stringify({
                     employee_code: form.employee_code,
                     first_name: form.first_name,
@@ -98,13 +106,23 @@ function EmployeePage() {
                     updated_date: new Date().toISOString(),
                 }),
             });
-            if (!res.ok) throw new Error("Failed to add employee");
+
+            if (!res.ok) {
+                throw new Error("Failed to add employee");
+            }
+
             const newEmp = await res.json();
+
             setEmployees((prev) => [...prev, newEmp]);
+
             setShowForm(false);
+
             setForm(emptyForm);
+
             showToast("Employee added successfully");
+
         } catch (err) {
+
             showToast(err.message, "error");
         }
     };
@@ -167,8 +185,8 @@ function EmployeePage() {
             {/* ===== ADMIN NAVBAR ===== */}
             <header className="admin-topnav">
                 <div className="admin-topnav-logo">
-                    <img src={dwelledgeLogo} alt="Dwelledge" className="admin-topnav-logo-img" />
-                    <span className="admin-topnav-logo-text">DWELLEDGE</span>
+                    <Link to="/"><img src={dwelledgeLogo} alt="Dwelledge" className="admin-topnav-logo-img" /></Link>
+                <span className="admin-topnav-logo-text"><Link to="/">DWELLEDGE</Link></span>
                 </div>
 
                 <nav className="admin-topnav-links">
